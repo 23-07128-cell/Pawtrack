@@ -6,13 +6,15 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>PAWTRACK | Helping Stray Animals</title>
   <style>
-    :root {
-      --purple: #7046c7;
-      --dark: #29213d;
-      --light: #f7f4ff;
-      --text: #383344;
-      --white: #ffffff;
-    }
+    
+:root {
+  --purple: #550000;
+  --dark: #550000;
+  --light: #ffffff;
+  --text: #292929;
+  --white: #ffffff;
+  --teal: #005555;
+}
 
     * { box-sizing: border-box; }
 
@@ -172,6 +174,8 @@
   </style>
 </head>
 <body>
+
+<div id="scrollProgress" aria-hidden="true"></div>
 
 <header>
   <a class="logo" href="#home">🐾 PAWTRACK</a>
@@ -347,6 +351,11 @@
   <small>Student project prototype</small>
 </footer>
 
+<button id="backToTop" type="button"
+        aria-label="Back to top" title="Back to top">
+  ↑
+</button>
+
 <script>
   document.getElementById("reportForm").addEventListener("submit", function(event) {
     event.preventDefault();
@@ -369,6 +378,53 @@
 
     alert(message);
   });
+  
+const progress = document.getElementById("scrollProgress");
+const backToTop = document.getElementById("backToTop");
+
+function updateScrollUI() {
+  const scrollable =
+    document.documentElement.scrollHeight - window.innerHeight;
+
+  const percentage = scrollable > 0
+    ? (window.scrollY / scrollable) * 100
+    : 0;
+
+  progress.style.width = percentage + "%";
+  backToTop.classList.toggle("visible", window.scrollY > 300);
+}
+
+window.addEventListener("scroll", updateScrollUI, {
+  passive: true
+});
+
+updateScrollUI();
+
+backToTop.addEventListener("click", () => {
+  window.scrollTo({ top: 0, behavior: "smooth" });
+});
+
+const revealItems = document.querySelectorAll(
+  ".card, .section-heading"
+);
+
+revealItems.forEach(item => item.classList.add("reveal"));
+
+if ("IntersectionObserver" in window) {
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add("visible");
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.12 });
+
+  revealItems.forEach(item => observer.observe(item));
+} else {
+  revealItems.forEach(item => item.classList.add("visible"));
+}
+
 </script>
 
 </body>
