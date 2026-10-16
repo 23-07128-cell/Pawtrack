@@ -1,1487 +1,507 @@
 
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#550000">
-  <meta name="description" content="PAWTRACK helps residential communities report stray animals, share animal welfare information, and connect animals in need with people who can help.">
-  <title>PAWTRACK | Every Paw Deserves Care</title>
-
-  <style>
-    :root {
-      --maroon: #550000;
-      --teal: #005555;
-      --white: #FFFFFF;
-      --cream: #faf7f5;
-      --text: #292929;
-      --muted: #666666;
-      --shadow: 0 12px 35px rgba(85, 0, 0, 0.10);
-      --radius: 18px;
-    }
-
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-
-    html {
-      scroll-behavior: smooth;
-      scroll-padding-top: 90px;
-    }
-
-    body {
-      font-family: Arial, Helvetica, sans-serif;
-      color: var(--text);
-      background: var(--white);
-      line-height: 1.7;
-      overflow-x: hidden;
-    }
-
-    a {
-      color: inherit;
-      text-decoration: none;
-    }
-
-    button, input, select, textarea {
-      font: inherit;
-    }
-
-    button, a {
-      -webkit-tap-highlight-color: transparent;
-    }
-
-    img {
-      max-width: 100%;
-    }
-
-    .container {
-      width: min(1120px, 90%);
-      margin: 0 auto;
-    }
-
-    /* Scroll progress */
-    #scrollProgress {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 0;
-      height: 5px;
-      background: var(--teal);
-      z-index: 2000;
-    }
-
-    /* Navigation */
-    header {
-      position: sticky;
-      top: 0;
-      z-index: 1000;
-      background: var(--white);
-      box-shadow: 0 3px 18px rgba(0, 0, 0, 0.07);
-    }
-
-    .navbar {
-      min-height: 82px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 25px;
-    }
-
-    .logo {
-      color: var(--maroon);
-      font-size: clamp(1.7rem, 3vw, 2.35rem);
-      font-weight: 900;
-      letter-spacing: 1px;
-      white-space: nowrap;
-    }
-
-    .logo span {
-      margin-right: 8px;
-    }
-
-    .nav-links {
-      display: flex;
-      align-items: center;
-      gap: 24px;
-    }
-
-    .nav-links a {
-      color: var(--maroon);
-      font-size: 0.95rem;
-      font-weight: 700;
-      transition: color 0.25s ease;
-    }
-
-    .nav-links a:hover {
-      color: var(--teal);
-    }
-
-    .menu-toggle {
-      display: none;
-      background: var(--maroon);
-      color: white;
-      border: none;
-      border-radius: 10px;
-      padding: 9px 13px;
-      cursor: pointer;
-      font-size: 1.2rem;
-    }
-
-    /* Buttons */
-    .btn {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      padding: 13px 23px;
-      border: 2px solid var(--maroon);
-      border-radius: 12px;
-      background: var(--maroon);
-      color: var(--white);
-      font-weight: 700;
-      cursor: pointer;
-      text-align: center;
-      transition: transform 0.25s ease,
-                  background 0.25s ease,
-                  color 0.25s ease,
-                  box-shadow 0.25s ease;
-    }
-
-    .btn:hover {
-      background: var(--teal);
-      border-color: var(--teal);
-      color: var(--white);
-      transform: translateY(-3px);
-      box-shadow: 0 8px 20px rgba(0, 85, 85, 0.2);
-    }
-
-    .btn-light {
-      background: var(--white);
-      color: var(--maroon);
-      border-color: var(--white);
-    }
-
-    .btn-outline {
-      background: transparent;
-      color: var(--maroon);
-    }
-
-    .btn-outline:hover {
-      color: var(--white);
-    }
-
-    /* Hero */
-    .hero {
-      position: relative;
-      isolation: isolate;
-      min-height: 590px;
-      display: grid;
-      place-items: center;
-      padding: 95px 0;
-      text-align: center;
-      color: var(--white);
-      background:
-        linear-gradient(
-          120deg,
-          rgba(85, 0, 0, 0.91),
-          rgba(0, 85, 85, 0.82)
-        ),
-        url("https://images.unsplash.com/photo-1450778869180-41d0601e046e?auto=format&fit=crop&w=2000&q=85")
-        center 45% / cover no-repeat;
-    }
-
-    .hero-content {
-      max-width: 850px;
-      animation: heroEnter 0.9s ease both;
-    }
-
-    .eyebrow {
-      display: inline-block;
-      border: 1px solid rgba(255,255,255,0.6);
-      background: rgba(255,255,255,0.12);
-      border-radius: 50px;
-      padding: 7px 18px;
-      margin-bottom: 23px;
-      font-size: 0.9rem;
-      letter-spacing: 1px;
-    }
-
-    .hero h1 {
-      font-size: clamp(2.6rem, 7vw, 5rem);
-      line-height: 1.08;
-      margin-bottom: 22px;
-      letter-spacing: -1.5px;
-    }
-
-    .hero p {
-      font-size: clamp(1rem, 2.5vw, 1.25rem);
-      max-width: 740px;
-      margin: 0 auto 30px;
-      color: #fff;
-    }
-
-    .hero-actions {
-      display: flex;
-      justify-content: center;
-      gap: 14px;
-      flex-wrap: wrap;
-    }
-
-    /* General sections */
-    section {
-      padding: 82px 0;
-    }
-
-    .section-heading {
-      text-align: center;
-      max-width: 730px;
-      margin: 0 auto 42px;
-    }
-
-    .section-heading .eyebrow {
-      color: var(--teal);
-      background: rgba(0, 85, 85, 0.07);
-      border-color: rgba(0, 85, 85, 0.2);
-      margin-bottom: 12px;
-    }
-
-    .section-heading h2 {
-      color: var(--maroon);
-      font-size: clamp(2rem, 4vw, 2.8rem);
-      line-height: 1.2;
-      margin-bottom: 14px;
-    }
-
-    .section-heading p {
-      color: var(--muted);
-    }
-
-    .about-grid,
-    .report-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 45px;
-      align-items: center;
-    }
-
-    .about-panel {
-      background: var(--cream);
-      border-radius: var(--radius);
-      padding: 35px;
-      border-left: 5px solid var(--teal);
-    }
-
-    .about-panel h3 {
-      color: var(--maroon);
-      font-size: 1.5rem;
-      margin-bottom: 12px;
-    }
-
-    .about-panel p + p {
-      margin-top: 12px;
-    }
-
-    .about-points {
-      display: grid;
-      gap: 17px;
-    }
-
-    .point {
-      display: flex;
-      gap: 15px;
-      align-items: flex-start;
-      padding: 18px;
-      border-radius: 14px;
-      background: var(--white);
-      box-shadow: var(--shadow);
-    }
-
-    .point-icon {
-      font-size: 1.7rem;
-      flex-shrink: 0;
-    }
-
-    .point h3 {
-      color: var(--teal);
-      font-size: 1.1rem;
-    }
-
-    /* Reporting */
-    .report-section {
-      background: var(--cream);
-    }
-
-    .form-card {
-      background: var(--white);
-      padding: clamp(22px, 4vw, 38px);
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
-    }
-
-    .form-card h3 {
-      color: var(--maroon);
-      font-size: 1.55rem;
-      margin-bottom: 8px;
-    }
-
-    .form-card > p {
-      color: var(--muted);
-      margin-bottom: 22px;
-    }
-
-    .form-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 17px;
-    }
-
-    .field {
-      display: flex;
-      flex-direction: column;
-      gap: 7px;
-    }
-
-    .field.full {
-      grid-column: 1 / -1;
-    }
-
-    .field label {
-      color: var(--maroon);
-      font-weight: 700;
-      font-size: 0.93rem;
-    }
-
-    .field input,
-    .field select,
-    .field textarea {
-      width: 100%;
-      min-width: 0;
-      padding: 12px 13px;
-      border: 1px solid #d8d8d8;
-      border-radius: 9px;
-      background: white;
-      color: var(--text);
-      outline: none;
-      transition: border 0.2s, box-shadow 0.2s;
-    }
-
-    .field input:focus,
-    .field select:focus,
-    .field textarea:focus {
-      border-color: var(--teal);
-      box-shadow: 0 0 0 3px rgba(0, 85, 85, 0.12);
-    }
-
-    .field textarea {
-      min-height: 120px;
-      resize: vertical;
-    }
-
-    .form-note {
-      font-size: 0.85rem;
-      color: var(--muted);
-      margin-top: 12px;
-    }
-
-    #formMessage {
-      display: none;
-      padding: 15px;
-      margin-top: 18px;
-      border-radius: 10px;
-      background: #e9f5f1;
-      color: var(--teal);
-      overflow-wrap: anywhere;
-    }
-
-    #formMessage.show {
-      display: block;
-    }
-
-    .report-info {
-      padding: 10px 0;
-    }
-
-    .report-info h3 {
-      color: var(--maroon);
-      font-size: 1.8rem;
-      margin-bottom: 15px;
-    }
-
-    .report-info p {
-      margin-bottom: 17px;
-      color: var(--muted);
-    }
-
-    .notice {
-      padding: 17px;
-      border-radius: 12px;
-      background: rgba(0, 85, 85, 0.08);
-      border-left: 4px solid var(--teal);
-      font-size: 0.92rem;
-    }
-
-    /* Community */
-    .community-grid {
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 22px;
-    }
-
-    .card {
-      background: var(--white);
-      border: 1px solid #eeeeee;
-      border-radius: var(--radius);
-      padding: 27px;
-      box-shadow: 0 6px 22px rgba(0, 0, 0, 0.04);
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
-      min-width: 0;
-    }
-
-    .card:hover {
-      transform: translateY(-7px);
-      box-shadow: var(--shadow);
-    }
-
-    .card-icon {
-      font-size: 2.1rem;
-      margin-bottom: 13px;
-    }
-
-    .card h3 {
-      color: var(--maroon);
-      font-size: 1.25rem;
-      margin-bottom: 10px;
-    }
-
-    .card p {
-      color: var(--muted);
-      font-size: 0.96rem;
-    }
-
-    .tag {
-      display: inline-block;
-      margin-bottom: 12px;
-      color: var(--teal);
-      background: rgba(0, 85, 85, 0.08);
-      padding: 4px 11px;
-      border-radius: 30px;
-      font-size: 0.8rem;
-      font-weight: 700;
-    }
-
-    /* Tips slider */
-    .tips-section {
-      background: var(--maroon);
-      color: var(--white);
-    }
-
-    .tips-section .section-heading h2,
-    .tips-section .section-heading p {
-      color: var(--white);
-    }
-
-    .tips-section .section-heading .eyebrow {
-      color: white;
-      border-color: rgba(255,255,255,0.5);
-      background: rgba(255,255,255,0.1);
-    }
-
-    .slider {
-      max-width: 760px;
-      margin: 0 auto;
-    }
-
-    .tip-slide {
-      display: none;
-      min-height: 245px;
-      padding: 36px;
-      border-radius: var(--radius);
-      background: var(--white);
-      color: var(--text);
-      text-align: center;
-      animation: slideEnter 0.4s ease;
-    }
-
-    .tip-slide.active {
-      display: block;
-    }
-
-    .tip-slide .card-icon {
-      font-size: 2.5rem;
-    }
-
-    .tip-slide h3 {
-      color: var(--teal);
-      font-size: 1.5rem;
-      margin-bottom: 12px;
-    }
-
-    .tip-slide p {
-      color: var(--muted);
-    }
-
-    .slider-controls {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      gap: 18px;
-      margin-top: 22px;
-    }
-
-    .slider-btn {
-      width: 45px;
-      height: 45px;
-      border: 1px solid white;
-      border-radius: 50%;
-      background: transparent;
-      color: white;
-      cursor: pointer;
-      transition: background 0.2s, color 0.2s;
-    }
-
-    .slider-btn:hover {
-      background: white;
-      color: var(--maroon);
-    }
-
-    #slideCount {
-      min-width: 60px;
-      text-align: center;
-    }
-
-    /* Partners and resources */
-    .partner-box {
-      border: 1px dashed rgba(0, 85, 85, 0.5);
-      background: rgba(0, 85, 85, 0.04);
-      border-radius: var(--radius);
-      padding: 30px;
-      text-align: center;
-      margin-top: 28px;
-    }
-
-    .partner-box h3 {
-      color: var(--teal);
-      margin-bottom: 9px;
-    }
-
-    .partner-box p {
-      color: var(--muted);
-      margin-bottom: 18px;
-    }
-
-    .resource-link {
-      display: inline-block;
-      margin-top: 14px;
-      color: var(--teal);
-      font-weight: 700;
-    }
-
-    .resource-link:hover {
-      color: var(--maroon);
-      text-decoration: underline;
-    }
-
-    /* Call to action */
-    .cta {
-      padding: 68px 0;
-      background: var(--teal);
-      color: var(--white);
-      text-align: center;
-    }
-
-    .cta h2 {
-      font-size: clamp(1.9rem, 4vw, 2.6rem);
-      margin-bottom: 12px;
-    }
-
-    .cta p {
-      max-width: 650px;
-      margin: 0 auto 23px;
-    }
-
-    /* Footer */
-    footer {
-      background: #242424;
-      color: var(--white);
-      padding: 38px 0 20px;
-    }
-
-    .footer-grid {
-      display: grid;
-      grid-template-columns: 1.5fr 1fr 1fr;
-      gap: 30px;
-      margin-bottom: 28px;
-    }
-
-    .footer-brand {
-      color: white;
-      font-size: 1.7rem;
-      font-weight: 900;
-      margin-bottom: 8px;
-    }
-
-    footer h3 {
-      margin-bottom: 12px;
-      font-size: 1.05rem;
-    }
-
-    footer p,
-    footer a {
-      color: #e1e1e1;
-      font-size: 0.93rem;
-    }
-
-    .footer-links {
-      display: grid;
-      gap: 7px;
-    }
-
-    footer a:hover {
-      color: white;
-      text-decoration: underline;
-    }
-
-    .copyright {
-      border-top: 1px solid #555;
-      padding-top: 18px;
-      text-align: center;
-      color: #cccccc;
-      font-size: 0.85rem;
-    }
-
-    /* Back-to-top */
-    #backToTop {
-      position: fixed;
-      bottom: 22px;
-      right: 22px;
-      width: 48px;
-      height: 48px;
-      border: none;
-      border-radius: 50%;
-      background: var(--maroon);
-      color: white;
-      font-size: 23px;
-      cursor: pointer;
-      opacity: 0;
-      pointer-events: none;
-      transform: translateY(10px);
-      transition: opacity 0.25s, transform 0.25s, background 0.25s;
-      z-index: 900;
-    }
-
-    #backToTop.visible {
-      opacity: 1;
-      pointer-events: auto;
-      transform: translateY(0);
-    }
-
-    #backToTop:hover {
-      background: var(--teal);
-    }
-
-    /* Scroll reveal */
-    .reveal {
-      opacity: 0;
-      transform: translateY(24px);
-      transition: opacity 0.65s ease, transform 0.65s ease;
-    }
-
-    .reveal.visible {
-      opacity: 1;
-      transform: translateY(0);
-    }
-
-    @keyframes heroEnter {
-      from { opacity: 0; transform: translateY(20px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    @keyframes slideEnter {
-      from { opacity: 0; transform: translateX(12px); }
-      to { opacity: 1; transform: translateX(0); }
-    }
-
-    /* Tablet and mobile */
-    @media (max-width: 900px) {
-      .menu-toggle {
-        display: block;
-      }
-
-      .navbar {
-        min-height: 75px;
-      }
-
-      .nav-links {
-        display: none;
-        position: absolute;
-        top: 100%;
-        left: 0;
-        right: 0;
-        padding: 20px 5%;
-        background: white;
-        box-shadow: 0 12px 18px rgba(0,0,0,0.09);
-        flex-direction: column;
-        align-items: stretch;
-        gap: 0;
-      }
-
-      .nav-links.open {
-        display: flex;
-      }
-
-      .nav-links a {
-        padding: 12px 5px;
-        border-bottom: 1px solid #eeeeee;
-      }
-
-      .nav-links .btn {
-        margin-top: 12px;
-      }
-
-      .about-grid,
-      .report-grid {
-        grid-template-columns: 1fr;
-      }
-
-      .community-grid {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-      }
-
-      .footer-grid {
-        grid-template-columns: 1fr 1fr;
-      }
-
-      .footer-grid > div:first-child {
-        grid-column: 1 / -1;
-      }
-    }
-
-    @media (max-width: 600px) {
-      section {
-        padding: 60px 0;
-      }
-
-      .hero {
-        min-height: 530px;
-        padding: 70px 0;
-      }
-
-      .hero h1 {
-        letter-spacing: -0.7px;
-      }
-
-      .hero-actions {
-        flex-direction: column;
-        align-items: stretch;
-      }
-
-      .hero-actions .btn {
-        width: 100%;
-      }
-
-      .community-grid,
-      .form-grid,
-      .footer-grid {
-        grid-template-columns: 1fr;
-      }
-
-      .footer-grid > div:first-child {
-        grid-column: auto;
-      }
-
-      .about-panel,
-      .card,
-      .tip-slide {
-        padding: 23px;
-      }
-
-      .navbar {
-        gap: 10px;
-      }
-
-      .logo {
-        font-size: 1.55rem;
-      }
-
-      .field.full {
-        grid-column: auto;
-      }
-    }
-
-    @media (prefers-reduced-motion: reduce) {
-      html {
-        scroll-behavior: auto;
-      }
-
-      *, *::before, *::after {
-        animation-duration: 0.01ms !important;
-        transition-duration: 0.01ms !important;
-      }
-
-      .reveal {
-        opacity: 1;
-        transform: none;
-      }
-    }
-  </style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="PAWTRACK helps communities report and monitor stray animals.">
+<title>PAWTRACK | Every Paw Deserves Care</title>
+<style>
+:root {
+  --maroon: #550000;
+  --teal: #005555;
+  --white: #FFFFFF;
+  --cream: #fbf8f5;
+  --ink: #242424;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; scroll-padding-top: 90px; }
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  color: var(--ink);
+  line-height: 1.6;
+}
+.container { width: min(1120px, 92%); margin: auto; }
+header {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: white;
+  border-bottom: 1px solid #eee;
+}
+.nav {
+  min-height: 76px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+}
+.brand {
+  color: var(--maroon);
+  font-size: 1.8rem;
+  font-weight: 900;
+  text-decoration: none;
+}
+nav { display: flex; flex-wrap: wrap; gap: 18px; }
+nav a {
+  color: var(--maroon);
+  font-weight: bold;
+  text-decoration: none;
+}
+nav a:hover { color: var(--teal); }
+button, input, select, textarea { font: inherit; }
+.btn {
+  display: inline-block;
+  padding: 12px 20px;
+  border: 0;
+  border-radius: 30px;
+  font-weight: bold;
+  text-decoration: none;
+  cursor: pointer;
+  transition: transform .2s, box-shadow .2s;
+}
+.btn:hover { transform: translateY(-3px); box-shadow: 0 8px 20px #0002; }
+.primary { background: var(--maroon); color: white; }
+.light { background: white; color: var(--maroon); }
+.secondary { background: var(--teal); color: white; }
+
+.hero {
+  color: white;
+  min-height: 570px;
+  display: flex;
+  align-items: center;
+  background:
+    linear-gradient(90deg, #350000e8, #005555b8),
+    url("https://images.unsplash.com/photo-1543466835-00a7907e9de1?auto=format&fit=crop&w=1800&q=80")
+    center/cover;
+}
+.hero-content { padding: 80px 0; max-width: 760px; }
+.eyebrow {
+  display: inline-block;
+  padding: 7px 15px;
+  border: 1px solid #ffffff99;
+  border-radius: 30px;
+}
+h1 { font-size: clamp(2.8rem, 7vw, 5rem); line-height: 1.05; margin: 24px 0; }
+.hero p { font-size: 1.2rem; max-width: 650px; }
+.actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 25px; }
+
+section { padding: 75px 0; }
+.soft { background: var(--cream); }
+.heading { text-align: center; max-width: 720px; margin: 0 auto 35px; }
+h2 { color: var(--maroon); font-size: clamp(2rem, 4vw, 3rem); line-height: 1.15; }
+.kicker { color: var(--teal); font-weight: bold; text-transform: uppercase; letter-spacing: 2px; }
+.about-grid, .report-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 35px;
+  align-items: center;
+}
+.about-photo {
+  width: 100%;
+  min-height: 330px;
+  object-fit: cover;
+  border-radius: 22px;
+}
+.cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+.card {
+  padding: 25px;
+  border: 1px solid #e7dfda;
+  border-radius: 20px;
+  background: white;
+  transition: transform .25s, box-shadow .25s;
+}
+.card:hover { transform: translateY(-7px); box-shadow: 0 12px 30px #0001; }
+.card h3 { color: var(--maroon); }
+.card p { color: #626262; }
+.card-icon { font-size: 2rem; }
+
+.report-aside {
+  background: var(--maroon);
+  color: white;
+  padding: 30px;
+  border-radius: 22px;
+}
+form {
+  background: white;
+  padding: 28px;
+  border: 1px solid #e7dfda;
+  border-radius: 22px;
+  box-shadow: 0 10px 30px #0001;
+}
+.form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.field { display: grid; gap: 7px; }
+.full { grid-column: 1 / -1; }
+label { color: var(--maroon); font-weight: bold; }
+input, select, textarea {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+}
+input:focus, select:focus, textarea:focus {
+  outline: 2px solid var(--teal);
+  outline-offset: 1px;
+}
+textarea { min-height: 120px; resize: vertical; }
+.status { color: var(--teal); font-weight: bold; }
+
+.slider {
+  overflow: hidden;
+  border-radius: 22px;
+  background: var(--teal);
+  color: white;
+}
+.slides { display: flex; transition: transform .5s ease; }
+.slide {
+  min-width: 100%;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: stretch;
+}
+.slide img { width: 100%; height: 320px; object-fit: cover; }
+.slide-copy { padding: 30px; }
+.slide-copy h3 { font-size: 1.8rem; line-height: 1.2; }
+.controls {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 15px;
+  padding: 15px;
+}
+.round {
+  width: 42px;
+  height: 42px;
+  border: 0;
+  border-radius: 50%;
+  background: var(--maroon);
+  color: white;
+  cursor: pointer;
+}
+.dots { display: flex; gap: 8px; }
+.dot {
+  width: 10px;
+  height: 10px;
+  border: 0;
+  border-radius: 50%;
+  background: #ffffff80;
+  cursor: pointer;
+}
+.dot.active { background: white; transform: scale(1.3); }
+
+.partner-note {
+  margin-top: 25px;
+  padding: 18px;
+  background: #e8f2f0;
+  border-left: 4px solid var(--teal);
+}
+.cta { background: var(--teal); color: white; }
+.cta h2 { color: white; }
+.cta-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+}
+footer { background: #260000; color: white; padding: 40px 0 20px; }
+footer a { color: white; }
+.footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 25px; }
+.footer-links { display: grid; gap: 8px; }
+.copyright { border-top: 1px solid #ffffff40; margin-top: 25px; padding-top: 18px; }
+
+.reveal { opacity: 0; transform: translateY(20px); transition: .65s ease; }
+.reveal.visible { opacity: 1; transform: none; }
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { scroll-behavior: auto !important; animation: none !important; transition: none !important; }
+  .reveal { opacity: 1; transform: none; }
+}
+@media (max-width: 800px) {
+  .nav { align-items: flex-start; flex-direction: column; padding: 15px 0; }
+  nav { gap: 12px; }
+  .about-grid, .report-grid, .slide { grid-template-columns: 1fr; }
+  .cards { grid-template-columns: repeat(2, 1fr); }
+  .slide img { height: 240px; }
+  .cta-inner { align-items: flex-start; flex-direction: column; }
+}
+@media (max-width: 520px) {
+  .cards, .form-grid, .footer-grid { grid-template-columns: 1fr; }
+  .full { grid-column: auto; }
+  .actions .btn { width: 100%; text-align: center; }
+  .hero { min-height: 520px; }
+}
+</style>
 </head>
-
 <body>
-  <div id="scrollProgress" aria-hidden="true"></div>
 
-  <header>
-    <div class="container navbar">
-      <a class="logo" href="#home" aria-label="PAWTRACK home">
-        <span>🐾</span>PAWTRACK
-      </a>
+<header>
+  <div class="container nav">
+    <a class="brand" href="#home">🐾 PAWTRACK</a>
+    <nav aria-label="Main navigation">
+      <a href="#home">Home</a>
+      <a href="#about">About</a>
+      <a href="#report">Report an Animal</a>
+      <a href="#community">Community</a>
+      <a href="#partners">Partners</a>
+      <a href="#resources">Resources</a>
+    </nav>
+  </div>
+</header>
 
-      <button
-        class="menu-toggle"
-        id="menuToggle"
-        type="button"
-        aria-label="Open navigation"
-        aria-expanded="false"
-        aria-controls="navLinks"
-      >☰</button>
-
-      <nav class="nav-links" id="navLinks" aria-label="Main navigation">
-        <a href="#home">Home</a>
-        <a href="#about">About</a>
-        <a href="#report">Report an Animal</a>
-        <a href="#community">Community</a>
-        <a href="#partners">Partners</a>
-        <a href="#resources">Resources</a>
-        <a class="btn" href="#report">Make a Report</a>
-      </nav>
+<main>
+  <section class="hero" id="home">
+    <div class="container hero-content">
+      <span class="eyebrow">Community · Care · Action</span>
+      <h1>Every Paw<br>Deserves Care.</h1>
+      <p>Helping our community report stray animals, identify those in need, and connect with people who can help.</p>
+      <div class="actions">
+        <a class="btn light" href="#report">Report a Stray Animal →</a>
+        <a class="btn secondary" href="#about">Learn About PAWTRACK</a>
+      </div>
     </div>
-  </header>
+  </section>
 
-  <main>
-    <!-- Homepage -->
-    <section class="hero" id="home">
-      <div class="container hero-content">
-        <span class="eyebrow">COMMUNITY · CARE · ACTION</span>
-        <h1>Every Paw<br>Deserves Care.</h1>
-        <p>
-          Helping our community monitor stray animals, identify those
-          in need, and connect with people who can help.
-        </p>
-        <div class="hero-actions">
-          <a class="btn btn-light" href="#report">🐾 Report a Stray Animal</a>
-          <a class="btn btn-outline" href="#about">Discover Our Mission</a>
-        </div>
+  <section id="about">
+    <div class="container about-grid reveal">
+      <div>
+        <span class="kicker">About us</span>
+        <h2>A safer, kinder community for stray animals.</h2>
+        <p>PAWTRACK is a community-based idea that helps residents share information about stray animals that may need attention. It aims to connect reports with local people and organizations that can provide guidance or assistance.</p>
+        <p>By making reports easier to organize, the community can become more aware of animals that may be injured, sick, lost, or in unsafe surroundings.</p>
+        <a class="btn primary" href="#report">Help by Reporting →</a>
       </div>
-    </section>
+      <img class="about-photo" src="https://images.unsplash.com/photo-1516734212186-a967f81ad0d7?auto=format&fit=crop&w=1000&q=80" alt="Dog outdoors">
+    </div>
+  </section>
 
-    <!-- About -->
-    <section id="about">
-      <div class="container">
-        <div class="section-heading reveal">
-          <span class="eyebrow">ABOUT PAWTRACK</span>
-          <h2>A Community That Cares</h2>
-          <p>
-            PAWTRACK is a community-based stray animal monitoring and
-            reporting system designed to help residents share information
-            about animals that may need attention.
-          </p>
-        </div>
-
-        <div class="about-grid">
-          <div class="about-panel reveal">
-            <h3>Why PAWTRACK Matters</h3>
-            <p>
-              Stray animals can be overlooked when residents do not know
-              where to report them or whom to contact. PAWTRACK provides
-              a central place to submit reports and find helpful resources.
-            </p>
-            <p>
-              By encouraging responsible reporting and community
-              participation, the system aims to help residents,
-              barangay officials, and animal welfare partners coordinate
-              their efforts.
-            </p>
-          </div>
-
-          <div class="about-points">
-            <div class="point reveal">
-              <div class="point-icon">📍</div>
-              <div>
-                <h3>Report and Locate</h3>
-                <p>Share an animal's location and condition so the situation can be understood.</p>
-              </div>
-            </div>
-            <div class="point reveal">
-              <div class="point-icon">🤝</div>
-              <div>
-                <h3>Connect the Community</h3>
-                <p>Help residents find appropriate contacts and animal welfare resources.</p>
-              </div>
-            </div>
-            <div class="point reveal">
-              <div class="point-icon">❤️</div>
-              <div>
-                <h3>Promote Responsible Care</h3>
-                <p>Encourage compassion, safety, and responsible action toward stray animals.</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- Animal report form -->
-    <section class="report-section" id="report">
-      <div class="container">
-        <div class="section-heading reveal">
-          <span class="eyebrow">MAKE A DIFFERENCE</span>
-          <h2>Report an Animal in Need</h2>
-          <p>
-            Provide clear information about a stray animal in your
-            community. Please report only what you have observed.
-          </p>
-        </div>
-
-        <div class="report-grid">
-          <div class="form-card reveal">
-            <h3>Animal Report Form</h3>
-            <p>Complete the fields below to prepare your report.</p>
-
-            <form id="reportForm">
-              <div class="form-grid">
-                <div class="field">
-                  <label for="animalType">Animal type *</label>
-                  <select id="animalType" name="animalType" required>
-                    <option value="">Select an animal</option>
-                    <option>Dog</option>
-                    <option>Cat</option>
-                    <option>Other</option>
-                  </select>
-                </div>
-
-                <div class="field">
-                  <label for="condition">Observed condition *</label>
-                  <select id="condition" name="condition" required>
-                    <option value="">Select condition</option>
-                    <option>Appears healthy</option>
-                    <option>Injured</option>
-                    <option>Appears sick</option>
-                    <option>Weak or unable to move</option>
-                    <option>Needs further assessment</option>
-                  </select>
-                </div>
-
-                <div class="field full">
-                  <label for="location">Location or landmark *</label>
-                  <input
-                    id="location"
-                    name="location"
-                    type="text"
-                    placeholder="e.g. Near the barangay hall"
-                    maxlength="200"
-                    required
-                  >
-                </div>
-
-                <div class="field">
-                  <label for="dateSeen">Date observed *</label>
-                  <input id="dateSeen" name="dateSeen" type="date" required>
-                </div>
-
-                <div class="field">
-                  <label for="animalCount">Number of animals</label>
-                  <input
-                    id="animalCount"
-                    name="animalCount"
-                    type="number"
-                    min="1"
-                    max="100"
-                    value="1"
-                  >
-                </div>
-
-                <div class="field full">
-                  <label for="description">Additional details *</label>
-                  <textarea
-                    id="description"
-                    name="description"
-                    placeholder="Describe the animal and the situation you observed."
-                    maxlength="1500"
-                    required
-                  ></textarea>
-                </div>
-
-                <div class="field full">
-                  <label for="contact">Your contact information (optional)</label>
-                  <input
-                    id="contact"
-                    name="contact"
-                    type="text"
-                    placeholder="Email or contact number"
-                    maxlength="150"
-                  >
-                </div>
-
-                <div class="field full">
-                  <button class="btn" type="submit">Prepare My Report →</button>
-                </div>
-              </div>
-            </form>
-
-            <div id="formMessage" role="status" aria-live="polite"></div>
-
-            <p class="form-note">
-              Demo notice: this form currently validates your entries
-              in your browser only. It does not send or save reports
-              to barangay officials or partner organizations.
-            </p>
-          </div>
-
-          <div class="report-info reveal">
-            <h3>Your Report Can Help</h3>
-            <p>
-              Clear observations can help the appropriate people
-              understand where an animal was seen and what kind of
-              assistance may be needed.
-            </p>
-            <div class="point">
-              <div class="point-icon">1️⃣</div>
-              <div>
-                <h3>Provide accurate details</h3>
-                <p>Include a recognizable landmark and describe what you observed.</p>
-              </div>
-            </div>
-            <br>
-            <div class="point">
-              <div class="point-icon">2️⃣</div>
-              <div>
-                <h3>Keep a safe distance</h3>
-                <p>Do not approach an animal that appears frightened, aggressive, or injured.</p>
-              </div>
-            </div>
-            <br>
-            <div class="notice">
-              <strong>Important:</strong> This website is not an emergency
-              response service. For an urgent animal or public safety
-              concern, contact your local authorities or a qualified
-              veterinary professional directly.
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- Community -->
-    <section id="community">
-      <div class="container">
-        <div class="section-heading reveal">
-          <span class="eyebrow">COMMUNITY CORNER</span>
-          <h2>Small Actions Matter</h2>
-          <p>
-            Everyone can contribute to a more caring and responsible
-            community for animals.
-          </p>
-        </div>
-
-        <div class="community-grid">
-          <article class="card reveal">
-            <div class="card-icon">🐕</div>
-            <span class="tag">Community Action</span>
-            <h3>Observe and Report</h3>
-            <p>
-              Notice a stray animal that may need help? Record its
-              location and condition, then contact an appropriate
-              local animal welfare group or authority.
-            </p>
-          </article>
-
-          <article class="card reveal">
-            <div class="card-icon">🏥</div>
-            <span class="tag">Animal Welfare</span>
-            <h3>Find Qualified Help</h3>
-            <p>
-              Injured or sick animals may need professional assessment.
-              Contact a veterinary clinic or animal welfare organization
-              for guidance.
-            </p>
-          </article>
-
-          <article class="card reveal">
-            <div class="card-icon">🤍</div>
-            <span class="tag">Responsible Care</span>
-            <h3>Show Compassion</h3>
-            <p>
-              Treat animals humanely, respect their space, and encourage
-              others to act responsibly when they encounter strays.
-            </p>
-          </article>
-        </div>
-      </div>
-    </section>
-
-    <!-- Interactive tips slider -->
-    <section class="tips-section" id="tips">
-      <div class="container">
-        <div class="section-heading reveal">
-          <span class="eyebrow">PAWTRACK TIPS</span>
-          <h2>Learn How You Can Help</h2>
-          <p>Use the arrows to explore practical animal welfare tips.</p>
-        </div>
-
-        <div class="slider reveal" aria-label="Animal welfare tips">
-          <article class="tip-slide active">
-            <div class="card-icon">📍</div>
-            <h3>Remember the Location</h3>
-            <p>
-              Use a clear landmark or street name when reporting a stray
-              animal. Accurate details can make follow-up easier.
-            </p>
-          </article>
-
-          <article class="tip-slide">
-            <div class="card-icon">🐾</div>
-            <h3>Observe from a Safe Distance</h3>
-            <p>
-              Avoid chasing or cornering unfamiliar animals. Give them
-              space and seek professional help if they appear injured
-              or distressed.
-            </p>
-          </article>
-
-          <article class="tip-slide">
-            <div class="card-icon">📷</div>
-            <h3>Describe What You See</h3>
-            <p>
-              If it is safe, note the animal's appearance, number,
-              condition, and when it was seen. Never put yourself at risk
-              to take a photo.
-            </p>
-          </article>
-
-          <article class="tip-slide">
-            <div class="card-icon">🤝</div>
-            <h3>Contact the Right People</h3>
-            <p>
-              Reach out to your barangay, a veterinary clinic, or an
-              animal welfare organization for guidance on appropriate
-              next steps.
-            </p>
-          </article>
-
-          <div class="slider-controls">
-            <button class="slider-btn" id="prevTip" type="button"
-              aria-label="Previous tip">←</button>
-            <span id="slideCount" aria-live="polite">1 / 4</span>
-            <button class="slider-btn" id="nextTip" type="button"
-              aria-label="Next tip">→</button>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- Partners -->
-    <section id="partners">
-      <div class="container">
-        <div class="section-heading reveal">
-          <span class="eyebrow">WORKING TOGETHER</span>
-          <h2>Our Potential Partners</h2>
-          <p>
-            PAWTRACK aims to connect residents with people and groups
-            who can provide appropriate animal welfare assistance.
-          </p>
-        </div>
-
-        <div class="community-grid">
-          <article class="card reveal">
-            <div class="card-icon">🏘️</div>
-            <h3>Barangay Officials</h3>
-            <p>
-              Potential partners for community coordination, receiving
-              reports, and referring concerns to appropriate services.
-            </p>
-          </article>
-
-          <article class="card reveal">
-            <div class="card-icon">🩺</div>
-            <h3>Veterinary Clinics</h3>
-            <p>
-              Veterinary professionals may provide assessments, treatment,
-              and guidance according to their services and availability.
-            </p>
-          </article>
-
-          <article class="card reveal">
-            <div class="card-icon">🐕‍🦺</div>
-            <h3>Animal Welfare Groups</h3>
-            <p>
-              Local shelters and animal welfare organizations may help
-              advise the community or coordinate assistance when possible.
-            </p>
-          </article>
-        </div>
-
-        <div class="partner-box reveal">
-          <h3>Are you an animal welfare organization?</h3>
-          <p>
-            We welcome conversations with potential partners who share
-            PAWTRACK's goal of promoting responsible animal care.
-            No organizations are represented as official partners yet.
-          </p>
-          <a class="btn" href="#contact">Get in Touch</a>
-        </div>
-      </div>
-    </section>
-
-    <!-- Resources -->
-    <section id="resources" style="background: var(--cream);">
-      <div class="container">
-        <div class="section-heading reveal">
-          <span class="eyebrow">HELPFUL INFORMATION</span>
-          <h2>Animal Welfare Resources</h2>
-          <p>
-            Explore official resources for responsible pet ownership
-            and animal welfare in the Philippines.
-          </p>
-        </div>
-
-        <div class="community-grid">
-          <article class="card reveal">
-            <div class="card-icon">🇵🇭</div>
-            <h3>Animal Welfare Act</h3>
-            <p>
-              Learn about the Philippines' animal welfare law and
-              its protections for animals.
-            </p>
-            <a class="resource-link"
-              href="https://lawphil.net/statutes/repacts/ra1998/ra_8485_1998.html"
-              target="_blank" rel="noopener noreferrer">
-              Read Republic Act No. 8485 ↗
-            </a>
-          </article>
-
-          <article class="card reveal">
-            <div class="card-icon">🏛️</div>
-            <h3>Bureau of Animal Industry</h3>
-            <p>
-              Visit the government agency's website to explore
-              animal health and veterinary-related information.
-            </p>
-            <a class="resource-link"
-              href="https://www.bai.gov.ph/"
-              target="_blank" rel="noopener noreferrer">
-              Visit the BAI website ↗
-            </a>
-          </article>
-
-          <article class="card reveal">
-            <div class="card-icon">📋</div>
-            <h3>Responsible Reporting</h3>
-            <p>
-              Give clear, factual descriptions. Protect your own safety
-              and respect the privacy of other community members.
-            </p>
-            <a class="resource-link" href="#report">
-              Go to the report form ↑
-            </a>
-          </article>
-        </div>
-      </div>
-    </section>
-
-    <!-- Contact -->
-    <section class="cta" id="contact">
-      <div class="container reveal">
-        <h2>Every Paw Deserves a Chance.</h2>
-        <p>
-          A caring community begins with awareness, responsible action,
-          and a willingness to help animals in need.
-        </p>
-        <a class="btn btn-light" href="#report">Help Make a Difference</a>
-      </div>
-    </section>
-  </main>
-
-  <footer>
+  <section class="soft">
     <div class="container">
-      <div class="footer-grid">
-        <div>
-          <div class="footer-brand">🐾 PAWTRACK</div>
-          <p>
-            A community-based stray animal monitoring and reporting
-            system for residential communities.
-          </p>
-        </div>
-
-        <div>
-          <h3>Explore</h3>
-          <div class="footer-links">
-            <a href="#about">About PAWTRACK</a>
-            <a href="#report">Report an Animal</a>
-            <a href="#community">Community</a>
-            <a href="#partners">Potential Partners</a>
-          </div>
-        </div>
-
-        <div>
-          <h3>Learn More</h3>
-          <div class="footer-links">
-            <a href="#resources">Animal Welfare Resources</a>
-            <a href="#tips">Animal Welfare Tips</a>
-            <a href="#contact">Contact</a>
-          </div>
-        </div>
+      <div class="heading reveal">
+        <span class="kicker">How it works</span>
+        <h2>Small actions can make a difference.</h2>
+        <p>PAWTRACK focuses on simple steps residents can take to help animals in their neighborhoods.</p>
       </div>
-
-      <div class="copyright">
-        © <span id="year"></span> PAWTRACK. Built with care for the community.
+      <div class="cards">
+        <article class="card reveal"><div class="card-icon">📍</div><h3>1. Report</h3><p>Share the animal's location, condition, and other useful observations.</p></article>
+        <article class="card reveal"><div class="card-icon">🤝</div><h3>2. Connect</h3><p>Use verified community contacts and animal welfare groups for advice and support.</p></article>
+        <article class="card reveal"><div class="card-icon">🐾</div><h3>3. Support</h3><p>Help build awareness and encourage responsible, compassionate action.</p></article>
       </div>
     </div>
-  </footer>
+  </section>
 
-  <button id="backToTop" type="button"
-    aria-label="Back to top" title="Back to top">↑</button>
+  <section id="report">
+    <div class="container">
+      <div class="heading reveal">
+        <span class="kicker">Make a report</span>
+        <h2>Seen an animal that may need help?</h2>
+        <p>Provide clear information so the situation can be understood.</p>
+      </div>
+      <div class="report-grid">
+        <aside class="report-aside reveal">
+          <h3>Your report can help raise awareness.</h3>
+          <p>Describe what you observed and where you saw the animal. Please keep a safe distance, especially if the animal appears frightened or injured.</p>
+          <p><strong>Remember:</strong> This demo form only creates a preview. It does not send a report to barangay officials or animal welfare organizations.</p>
+        </aside>
+        <form id="reportForm" class="reveal">
+          <div class="form-grid">
+            <div class="field">
+              <label for="animalType">Animal type *</label>
+              <select id="animalType" name="animalType" required>
+                <option value="">Choose one</option>
+                <option>Dog</option><option>Cat</option><option>Other</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="condition">Condition *</label>
+              <select id="condition" name="condition" required>
+                <option value="">Choose one</option>
+                <option>Appears healthy</option><option>Injured</option>
+                <option>Sick or weak</option><option>Very young / alone</option>
+                <option>In danger</option><option>Unsure</option>
+              </select>
+            </div>
+            <div class="field full">
+              <label for="location">Location or landmark *</label>
+              <input id="location" name="location" placeholder="Street, purok, barangay, or landmark" required>
+            </div>
+            <div class="field">
+              <label for="dateSeen">Date seen *</label>
+              <input id="dateSeen" name="dateSeen" type="date" required>
+            </div>
+            <div class="field">
+              <label for="count">Number of animals</label>
+              <input id="count" name="count" type="number" min="1" max="100" value="1">
+            </div>
+            <div class="field full">
+              <label for="details">What did you observe? *</label>
+              <textarea id="details" name="details" placeholder="Describe the animal and what help may be needed." required></textarea>
+            </div>
+            <div class="field full">
+              <label for="photoInput">Photo (optional)</label>
+              <input id="photoInput" type="file" accept="image/*">
+              <small>In this demo, your photo is not uploaded.</small>
+            </div>
+            <div class="field full">
+              <label for="contact">Contact details (optional)</label>
+              <input id="contact" name="contact" placeholder="Only share details you are comfortable providing">
+            </div>
+            <div class="field full">
+              <button class="btn primary" type="submit">Preview My Report →</button>
+              <p id="formStatus" class="status" role="status" aria-live="polite"></p>
+              <pre id="reportPreview" hidden style="white-space:pre-wrap;overflow-wrap:anywhere;background:#e8f2f0;padding:15px;border-radius:12px;font:inherit"></pre>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </section>
 
-  <script>
-    // Update the copyright year
-    document.getElementById("year").textContent =
-      new Date().getFullYear();
+  <section class="soft" id="community">
+    <div class="container">
+      <div class="heading reveal">
+        <span class="kicker">Community corner</span>
+        <h2>Care starts with what we do.</h2>
+        <p>Use the slider to explore simple reminders for helping stray animals responsibly.</p>
+      </div>
+      <div class="slider reveal">
+        <div class="slides" id="slides">
+          <article class="slide">
+            <img src="https://images.unsplash.com/photo-1516734212186-a967f81ad0d7?auto=format&fit=crop&w=1000&q=80" alt="Dog outdoors">
+            <div class="slide-copy"><h3>Observe safely. Report clearly.</h3><p>Note the location and visible condition. Do not approach an animal that seems frightened, aggressive, or badly injured.</p><a class="btn light" href="#report">Make a Report</a></div>
+          </article>
+          <article class="slide">
+            <img src="https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?auto=format&fit=crop&w=1000&q=80" alt="Cat looking toward the camera">
+            <div class="slide-copy"><h3>Show kindness without taking risks.</h3><p>Give animals space and ask a veterinary professional or animal welfare group for advice when needed.</p><a class="btn light" href="#partners">Explore Partners</a></div>
+          </article>
+          <article class="slide">
+            <img src="https://images.unsplash.com/photo-1548199973-03cce0bbc87b?auto=format&fit=crop&w=1000&q=80" alt="Two dogs outdoors">
+            <div class="slide-copy"><h3>Build a caring community.</h3><p>Share reliable information and encourage responsible pet ownership in your neighborhood.</p><a class="btn light" href="#resources">View Resources</a></div>
+          </article>
+        </div>
+        <div class="controls">
+          <button class="round" id="prevSlide" aria-label="Previous tip">‹</button>
+          <div class="dots" id="slideDots"></div>
+          <button class="round" id="nextSlide" aria-label="Next tip">›</button>
+        </div>
+      </div>
+    </div>
+  </section>
 
-    // Mobile navigation
-    const menuToggle = document.getElementById("menuToggle");
-    const navLinks = document.getElementById("navLinks");
+  <section id="partners">
+    <div class="container">
+      <div class="heading reveal">
+        <span class="kicker">Working together</span>
+        <h2>Local support makes a difference.</h2>
+        <p>These are suggested partner categories, not confirmed partnerships.</p>
+      </div>
+      <div class="cards">
+        <article class="card reveal"><div class="card-icon">🩺</div><h3>Veterinary Clinics</h3><p>For professional advice about injured or sick animals and appropriate care.</p></article>
+        <article class="card reveal"><div class="card-icon">🏠</div><h3>Animal Shelters & Rescuers</h3><p>For guidance about rescue, temporary care, and animal welfare.</p></article>
+        <article class="card reveal"><div class="card-icon">🏘️</div><h3>Barangay & Community Groups</h3><p>For community coordination and directing concerns to appropriate local contacts.</p></article>
+      </div>
+      <p class="partner-note">Add verified organization names and contact details only after receiving their permission.</p>
+    </div>
+  </section>
 
-    menuToggle.addEventListener("click", () => {
-      const isOpen = navLinks.classList.toggle("open");
-      menuToggle.setAttribute("aria-expanded", String(isOpen));
-      menuToggle.setAttribute(
-        "aria-label",
-        isOpen ? "Close navigation" : "Open navigation"
-      );
-      menuToggle.textContent = isOpen ? "✕" : "☰";
-    });
+  <section class="soft" id="resources">
+    <div class="container">
+      <div class="heading reveal">
+        <span class="kicker">Helpful resources</span>
+        <h2>Small actions. More informed communities.</h2>
+      </div>
+      <div class="cards">
+        <article class="card reveal"><div class="card-icon">🛟</div><h3>Prioritize Safety</h3><p>Keep a safe distance from distressed animals and seek qualified help.</p></article>
+        <article class="card reveal"><div class="card-icon">📌</div><h3>Give Clear Details</h3><p>Share an accurate landmark, date, and description of what you observed.</p></article>
+        <article class="card reveal"><div class="card-icon">💚</div><h3>Support Responsibly</h3><p>Contact a qualified local group or veterinary clinic for advice.</p></article>
+      </div>
+    </div>
+  </section>
 
-    navLinks.querySelectorAll("a").forEach(link => {
-      link.addEventListener("click", () => {
-        navLinks.classList.remove("open");
-        menuToggle.setAttribute("aria-expanded", "false");
-        menuToggle.setAttribute("aria-label", "Open navigation");
-        menuToggle.textContent = "☰";
-      });
-    });
+  <section class="cta">
+    <div class="container cta-inner reveal">
+      <div><h2>Notice an animal in need?</h2><p>Help your community by sharing clear and responsible information.</p></div>
+      <a class="btn light" href="#report">Report an Animal →</a>
+    </div>
+  </section>
+</main>
 
-    // Scroll progress and back-to-top button
-    const progress = document.getElementById("scrollProgress");
-    const backToTop = document.getElementById("backToTop");
+<footer>
+  <div class="container">
+    <div class="footer-grid">
+      <div><a class="brand" href="#home">🐾 PAWTRACK</a><p>A community-based stray animal monitoring and reporting system for residential communities.</p></div>
+      <div><h3>Explore</h3><div class="footer-links"><a href="#about">About PAWTRACK</a><a href="#report">Report an Animal</a><a href="#community">Community Tips</a></div></div>
+      <div><h3>Get Involved</h3><div class="footer-links"><a href="#partners">Partner Directory</a><a href="#resources">Animal Welfare Resources</a><a href="#home">Back to Top ↑</a></div></div>
+    </div>
+    <div class="copyright">© <span id="year"></span> PAWTRACK. Community care starts with awareness. Demo website.</div>
+  </div>
+</footer>
 
-    function updateScrollUI() {
-      const scrollable =
-        document.documentElement.scrollHeight - window.innerHeight;
+<script>
+const slides = document.getElementById("slides");
+const items = Array.from(slides.children);
+const dots = document.getElementById("slideDots");
+let active = 0;
 
-      const percentage = scrollable > 0
-        ? (window.scrollY / scrollable) * 100
-        : 0;
+items.forEach((item, index) => {
+  const dot = document.createElement("button");
+  dot.className = "dot" + (index === 0 ? " active" : "");
+  dot.setAttribute("aria-label", "Show community tip " + (index + 1));
+  dot.addEventListener("click", () => showSlide(index));
+  dots.appendChild(dot);
+});
 
-      progress.style.width = percentage + "%";
-      backToTop.classList.toggle("visible", window.scrollY > 300);
-    }
+function showSlide(index) {
+  active = (index + items.length) % items.length;
+  slides.style.transform = `translateX(-${active * 100}%)`;
+  Array.from(dots.children).forEach((dot, i) => {
+    dot.classList.toggle("active", i === active);
+  });
+}
+document.getElementById("prevSlide").addEventListener("click", () => showSlide(active - 1));
+document.getElementById("nextSlide").addEventListener("click", () => showSlide(active + 1));
 
-    window.addEventListener("scroll", updateScrollUI, {
-      passive: true
-    });
-
-    updateScrollUI();
-
-    backToTop.addEventListener("click", () => {
-      window.scrollTo({ top: 0, behavior: "smooth" });
-    });
-
-    // Reveal sections and cards as visitors scroll
-    const revealItems = document.querySelectorAll(
-      ".reveal, .card"
-    );
-
-    if ("IntersectionObserver" in window) {
-      const observer = new IntersectionObserver(entries => {
-        entries.forEach(entry => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add("visible");
-            observer.unobserve(entry.target);
-          }
-        });
-      }, { threshold: 0.12 });
-
-      revealItems.forEach(item => observer.observe(item));
-    } else {
-      revealItems.forEach(item => item.classList.add("visible"));
-    }
-
-    // Animal welfare tips slider
-    const slides = Array.from(
-      document.querySelectorAll(".tip-slide")
-    );
-
-    const slideCount = document.getElementById("slideCount");
-    let currentSlide = 0;
-
-    function showSlide(index) {
-      currentSlide = (index + slides.length) % slides.length;
-
-      slides.forEach((slide, i) => {
-        slide.classList.toggle("active", i === currentSlide);
-      });
-
-      slideCount.textContent =
-        `${currentSlide + 1} / ${slides.length}`;
-    }
-
-    document.getElementById("prevTip").addEventListener("click", () => {
-      showSlide(currentSlide - 1);
-    });
-
-    document.getElementById("nextTip").addEventListener("click", () => {
-      showSlide(currentSlide + 1);
-    });
-
-    // Demo report form
-    const reportForm = document.getElementById("reportForm");
-    const formMessage = document.getElementById("formMessage");
-
-    reportForm.addEventListener("submit", event => {
-      event.preventDefault();
-
-      if (!reportForm.reportValidity()) {
-        return;
+if ("IntersectionObserver" in window) {
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add("visible");
+        observer.unobserve(entry.target);
       }
-
-      const data = new FormData(reportForm);
-      const animal = data.get("animalType");
-      const location = data.get("location");
-      const condition = data.get("condition");
-
-      formMessage.replaceChildren();
-
-      const heading = document.createElement("strong");
-      heading.textContent = "Your report details are ready.";
-
-      const message = document.createElement("p");
-      message.textContent =
-        `Animal: ${animal}. Location: ${location}. ` +
-        `Observed condition: ${condition}.`;
-
-      const note = document.createElement("p");
-      note.textContent =
-        "This is a demonstration only. Your report has not been " +
-        "sent or saved. Please contact the appropriate local service " +
-        "directly if assistance is needed.";
-
-      formMessage.append(heading, message, note);
-      formMessage.classList.add("show");
-      formMessage.scrollIntoView({
-        behavior: "smooth",
-        block: "nearest"
-      });
     });
-  </script>
+  }, { threshold: 0.12 });
+  document.querySelectorAll(".reveal").forEach(el => observer.observe(el));
+} else {
+  document.querySelectorAll(".reveal").forEach(el => el.classList.add("visible"));
+}
+
+document.getElementById("dateSeen").value = new Date().toISOString().slice(0, 10);
+document.getElementById("year").textContent = new Date().getFullYear();
+
+document.getElementById("reportForm").addEventListener("submit", event => {
+  event.preventDefault();
+  const form = event.currentTarget;
+  if (!form.reportValidity()) return;
+
+  const data = new FormData(form);
+  const photo = document.getElementById("photoInput").files[0];
+  const report = [
+    "REPORT PREVIEW — not submitted or saved",
+    "Animal: " + data.get("animalType"),
+    "Condition: " + data.get("condition"),
+    "Location: " + data.get("location"),
+    "Date seen: " + data.get("dateSeen"),
+    "Number of animals: " + (data.get("count") || "1"),
+    "Details: " + data.get("details"),
+    "Photo selected: " + (photo ? photo.name : "No"),
+    "Contact: " + (data.get("contact") || "Not provided")
+  ];
+
+  document.getElementById("formStatus").textContent =
+    "Your preview is ready below. Nothing has been sent or stored.";
+  const preview = document.getElementById("reportPreview");
+  preview.hidden = false;
+  preview.textContent = report.join("\n");
+});
+</script>
 </body>
 </html>
