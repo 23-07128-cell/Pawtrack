@@ -1,0 +1,375 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PAWTRACK | Helping Stray Animals</title>
+  <style>
+    :root {
+      --purple: #7046c7;
+      --dark: #29213d;
+      --light: #f7f4ff;
+      --text: #383344;
+      --white: #ffffff;
+    }
+
+    * { box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: var(--light);
+      color: var(--text);
+      line-height: 1.6;
+    }
+
+    header {
+      background: var(--white);
+      padding: 16px 7%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+      box-shadow: 0 2px 12px #20133a12;
+    }
+
+    .logo {
+      color: var(--purple);
+      font-size: 27px;
+      font-weight: 800;
+      text-decoration: none;
+      letter-spacing: 1px;
+    }
+
+    nav { display: flex; flex-wrap: wrap; gap: 18px; }
+
+    nav a {
+      color: var(--dark);
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    nav a:hover { color: var(--purple); }
+
+    .hero {
+      padding: 85px 8%;
+      background: linear-gradient(120deg, #302044f2, #7046c7dc),
+        url("https://images.unsplash.com/photo-1450778869180-41d0601e046e?auto=format&fit=crop&w=1600&q=80")
+        center/cover;
+      color: white;
+      text-align: center;
+    }
+
+    .hero .tag {
+      display: inline-block;
+      background: #ffffff24;
+      border: 1px solid #ffffff66;
+      border-radius: 30px;
+      padding: 6px 15px;
+      font-size: 13px;
+    }
+
+    h1 { font-size: clamp(38px, 6vw, 64px); line-height: 1.1; margin: 20px 0; }
+
+    .hero p {
+      max-width: 650px;
+      margin: 0 auto 28px;
+      font-size: 18px;
+    }
+
+    .button {
+      display: inline-block;
+      padding: 12px 22px;
+      border-radius: 9px;
+      background: var(--purple);
+      color: white;
+      text-decoration: none;
+      border: 0;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .button:hover { opacity: .88; }
+
+    .hero .button { background: white; color: var(--purple); }
+
+    section { padding: 60px 8%; scroll-margin-top: 20px; }
+
+    .section-heading { text-align: center; margin-bottom: 30px; }
+
+    .section-heading h2 { color: var(--dark); font-size: 30px; margin-bottom: 8px; }
+
+    .section-heading p { max-width: 650px; margin: auto; }
+
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 20px;
+    }
+
+    .card {
+      background: white;
+      padding: 24px;
+      border-radius: 15px;
+      box-shadow: 0 5px 20px #2413440c;
+    }
+
+    .card .emoji { font-size: 34px; }
+
+    .card h3 { color: var(--dark); }
+
+    .soft { background: #eee7ff; }
+
+    .report-layout {
+      max-width: 700px;
+      margin: auto;
+      background: white;
+      padding: 28px;
+      border-radius: 16px;
+      box-shadow: 0 5px 25px #24134412;
+    }
+
+    label { display: block; margin: 14px 0 6px; font-weight: 700; }
+
+    input, select, textarea {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #d8d0e6;
+      border-radius: 8px;
+      font: inherit;
+      background: white;
+    }
+
+    textarea { min-height: 100px; resize: vertical; }
+
+    .notice { font-size: 13px; color: #6d657b; }
+
+    .resource-link {
+      color: var(--purple);
+      font-weight: 700;
+      text-decoration: none;
+    }
+
+    footer {
+      background: var(--dark);
+      color: white;
+      padding: 30px 8%;
+      text-align: center;
+    }
+
+    @media (max-width: 600px) {
+      header { justify-content: center; }
+      nav { justify-content: center; gap: 12px; }
+      .hero { padding: 65px 6%; }
+      section { padding: 45px 6%; }
+      .report-layout { padding: 20px; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <a class="logo" href="#home">🐾 PAWTRACK</a>
+  <nav aria-label="Main navigation">
+    <a href="#home">Home</a>
+    <a href="#about">About</a>
+    <a href="#report">Report an Animal</a>
+    <a href="#updates">Community</a>
+    <a href="#partners">Partners</a>
+    <a href="#resources">Resources</a>
+  </nav>
+</header>
+
+<main>
+  <section class="hero" id="home">
+    <span class="tag">COMMUNITY • CARE • ACTION</span>
+    <h1>Every Paw<br>Deserves Care.</h1>
+    <p>
+      Helping our community monitor stray animals, identify
+      those in need, and connect with people who can help.
+    </p>
+    <a class="button" href="#report">Report a Stray Animal</a>
+  </section>
+
+  <section id="about">
+    <div class="section-heading">
+      <h2>About PAWTRACK</h2>
+      <p>
+        PAWTRACK is a community-based stray animal monitoring
+        and reporting system for residential communities.
+        It helps organize reports and supports coordination
+        with barangay officials and animal welfare partners.
+      </p>
+    </div>
+    <div class="cards">
+      <article class="card">
+        <div class="emoji">📍</div>
+        <h3>Report Sightings</h3>
+        <p>Share an animal's location, photo, and observed condition.</p>
+      </article>
+      <article class="card">
+        <div class="emoji">🗺️</div>
+        <h3>Monitor Hotspots</h3>
+        <p>Organize reports to identify places where stray animals are frequently seen.</p>
+      </article>
+      <article class="card">
+        <div class="emoji">🤝</div>
+        <h3>Connect for Help</h3>
+        <p>Help connect community reports with organizations that may provide assistance.</p>
+      </article>
+    </div>
+  </section>
+
+  <section class="soft" id="report">
+    <div class="section-heading">
+      <h2>Report a Stray Animal</h2>
+      <p>Provide the details below to prepare a report.</p>
+    </div>
+
+    <form class="report-layout" id="reportForm">
+      <label for="animal">Type of animal</label>
+      <select id="animal" required>
+        <option value="">Select an animal</option>
+        <option>Dog</option>
+        <option>Cat</option>
+        <option>Other</option>
+      </select>
+
+      <label for="location">Location of sighting</label>
+      <input id="location" type="text" placeholder="Street, area, or landmark" required>
+
+      <label for="condition">Observed condition</label>
+      <select id="condition" required>
+        <option value="">Select the observed condition</option>
+        <option>Appears healthy</option>
+        <option>Appears injured</option>
+        <option>Appears sick or weak</option>
+        <option>Needs urgent assessment</option>
+        <option>Unsure</option>
+      </select>
+
+      <label for="photo">Animal photo (optional)</label>
+      <input id="photo" type="file" accept="image/*">
+
+      <label for="details">Additional observations</label>
+      <textarea id="details" placeholder="Describe what you observed. Avoid including private information."></textarea>
+
+      <p class="notice">
+        This is a demonstration form. Reports are not transmitted
+        or saved yet. Please do not include sensitive personal information.
+      </p>
+
+      <button class="button" type="submit">Prepare Report</button>
+      <p id="formMessage" role="status" aria-live="polite"></p>
+    </form>
+  </section>
+
+  <section id="updates">
+    <div class="section-heading">
+      <h2>Community Updates</h2>
+      <p>Updates can help residents stay informed about animal welfare activities and reported cases.</p>
+    </div>
+    <div class="cards">
+      <article class="card">
+        <div class="emoji">📢</div>
+        <h3>Community Announcements</h3>
+        <p>Space for verified announcements from authorized community personnel.</p>
+      </article>
+      <article class="card">
+        <div class="emoji">🐕</div>
+        <h3>Animal Welfare Activities</h3>
+        <p>Share future outreach programs and animal welfare activities when confirmed.</p>
+      </article>
+    </div>
+  </section>
+
+  <section class="soft" id="partners">
+    <div class="section-heading">
+      <h2>Our Animal Welfare Partners</h2>
+      <p>
+        A directory for veterinary clinics, animal shelters,
+        rescue groups, and organizations that support stray animals.
+      </p>
+    </div>
+    <div class="cards">
+      <article class="card">
+        <div class="emoji">🏥</div>
+        <h3>Veterinary Clinics</h3>
+        <p>Find veterinary services that may assess sick or injured animals.</p>
+      </article>
+      <article class="card">
+        <div class="emoji">🐾</div>
+        <h3>Animal Welfare Groups</h3>
+        <p>Connect with animal welfare and rescue organizations.</p>
+      </article>
+      <article class="card">
+        <div class="emoji">🏡</div>
+        <h3>Animal Shelters</h3>
+        <p>Find shelter contacts and learn about their services and requirements.</p>
+      </article>
+    </div>
+    <p class="notice" style="text-align:center">
+      Partner listings will be added after their details and participation are verified.
+    </p>
+  </section>
+
+  <section id="resources">
+    <div class="section-heading">
+      <h2>Animal Welfare Resources</h2>
+      <p>Simple reminders for residents who encounter stray animals.</p>
+    </div>
+    <div class="cards">
+      <article class="card">
+        <h3>Keep a Safe Distance</h3>
+        <p>Approach unfamiliar animals carefully. Do not force contact with an animal that appears frightened or aggressive.</p>
+      </article>
+      <article class="card">
+        <h3>Observe and Report</h3>
+        <p>Note the location and visible condition. Avoid putting yourself or the animal in danger while taking a photo.</p>
+      </article>
+      <article class="card">
+        <h3>Seek Appropriate Help</h3>
+        <p>Contact local animal welfare services or a veterinary professional when an animal appears injured or seriously ill.</p>
+      </article>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <h2>🐾 PAWTRACK</h2>
+  <p>Working together for the welfare of stray animals.</p>
+  <p>Community-Based Stray Animal Monitoring and Reporting System</p>
+  <small>Student project prototype</small>
+</footer>
+
+<script>
+  document.getElementById("reportForm").addEventListener("submit", function(event) {
+    event.preventDefault();
+
+    const animal = document.getElementById("animal").value;
+    const location = document.getElementById("location").value.trim();
+    const condition = document.getElementById("condition").value;
+    const details = document.getElementById("details").value.trim();
+
+    const message =
+      "PAWTRACK DEMONSTRATION REPORT\n\n" +
+      "Animal: " + animal + "\n" +
+      "Location: " + location + "\n" +
+      "Observed condition: " + condition + "\n" +
+      "Additional observations: " + (details || "None") +
+      "\n\nThis report has not been sent or saved.";
+
+    document.getElementById("formMessage").textContent =
+      "Your report preview is ready. This demonstration does not send reports to barangay officials.";
+
+    alert(message);
+  });
+</script>
+
+</body>
+</html>
