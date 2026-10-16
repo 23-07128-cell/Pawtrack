@@ -300,7 +300,7 @@ footer a { color: white; }
         <aside class="report-aside reveal">
           <h3>Your report can help raise awareness.</h3>
           <p>Describe what you observed and where you saw the animal. Please keep a safe distance, especially if the animal appears frightened or injured.</p>
-          <p><strong>Remember:</strong> This demo form only creates a preview. It does not send a report to barangay officials or animal welfare organizations.</p>
+          <p><strong>Remember:</strong> Submitting this form sends the report details to the PAWTRACK Google Sheets database. This demo does not automatically notify barangay officials or animal welfare organizations.</p>
         </aside>
         <form id="reportForm" class="reveal">
           <div class="form-grid">
@@ -517,7 +517,7 @@ reportForm.addEventListener("submit", function (event) {
 
   const photo = document.getElementById("photoInput").files[0];
   const previewLines = [
-    "REPORT PREVIEW — not yet submitted",
+    "REPORT PREVIEW — review before submitting",
     "",
     "Animal: " + currentReport.animalType,
     "Condition: " + currentReport.condition,
@@ -534,7 +534,7 @@ reportForm.addEventListener("submit", function (event) {
   sendReportBtn.hidden = false;
   sendReportBtn.disabled = false;
   sendReportBtn.textContent = "Submit Report to PAWTRACK";
-  formStatus.textContent = "Review your report above. If everything is correct, submit it to send the details to PAWTRACK.";
+  formStatus.textContent = "Review the details above. Select Submit Report to PAWTRACK to send this report to the connected spreadsheet.";
 });
 
 // STEP 2: Send the report to the Google Apps Script web app.
@@ -558,7 +558,7 @@ sendReportBtn.addEventListener("click", async function () {
   submissionInProgress = true;
   sendReportBtn.disabled = true;
   sendReportBtn.textContent = "Sending...";
-  formStatus.textContent = "Sending your report request. Please wait...";
+  formStatus.textContent = "Sending the report request. Please wait and do not close this page...";
 
   try {
     // Apps Script accepts this simple request without a browser preflight.
@@ -570,12 +570,9 @@ sendReportBtn.addEventListener("click", async function () {
       body: JSON.stringify(currentReport)
     });
 
-    formStatus.textContent = "The request was sent, but the website cannot verify the save. Please check the Reports tab in your Google Sheet before assuming the report was recorded.";
-    sendReportBtn.textContent = "Request Sent — Check Sheet";
-    reportPreview.hidden = true;
-    currentReport = null;
-    reportForm.reset();
-    document.getElementById("dateSeen").value = new Date().toISOString().slice(0, 10);
+    formStatus.textContent = "The request was sent to Google Apps Script, but this browser cannot confirm that it was saved. Check the Reports tab in Google Sheets before submitting again. If no row appears, check Apps Script > Executions and confirm the latest web app deployment is active.";
+    sendReportBtn.textContent = "Request Sent — Check Google Sheet";
+    // Keep the preview and form values visible until the user verifies the row in Sheets.
 
   } catch (error) {
     console.error("PAWTRACK submission error:", error);
@@ -585,7 +582,7 @@ sendReportBtn.addEventListener("click", async function () {
   } finally {
     submissionInProgress = false;
   }
-} );
+});
 </script>
 </body>
 </html>
