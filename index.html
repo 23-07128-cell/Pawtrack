@@ -477,31 +477,115 @@ if ("IntersectionObserver" in window) {
 document.getElementById("dateSeen").value = new Date().toISOString().slice(0, 10);
 document.getElementById("year").textContent = new Date().getFullYear();
 
-document.getElementById("reportForm").addEventListener("submit", event => {
-  event.preventDefault();
-  const form = event.currentTarget;
-  if (!form.reportValidity()) return;
+// Google Apps Script Web App URL
+const PAWTRACK_SCRIPT_URL =
+  "https://script.google.com/macros/s/AKfycbxj2nQdNj3pcsr9IRcf8cZrJK3MM3Hu3Gefwsdnn9Qja0akIhUdkFM-wiX_KmV9ryNx/exec";
 
-  const data = new FormData(form);
+const reportForm = document.getElementById("reportForm");
+const reportPreview = document.getElementById("reportPreview");
+const formStatus = document.getElementById("formStatus");
+
+// Add a separate submit-to-Google-Sheets button after the preview element.
+const sendReportBtn = document.createElement("button");
+sendReportBtn.id = "sendReportBtn";
+sendReportBtn.className = "btn secondary";
+sendReportBtn.type = "button";
+sendReportBtn.textContent = "Submit Report to PAWTRACK";
+sendReportBtn.hidden = true;
+reportPreview.insertAdjacentElement("afterend", sendReportBtn);
+
+let currentReport = null;
+let submissionInProgress = false;
+
+// STEP 1: Validate the form and create a preview.
+reportForm.addEventListener("submit", function (event) {
+  event.preventDefault();
+
+  if (!reportForm.reportValidity()) return;
+
+  const formData = new FormData(reportForm);
+
+  currentReport = {
+    animalType: String(formData.get("animalType") || "").trim(),
+    condition: String(formData.get("condition") || "").trim(),
+    location: String(formData.get("location") || "").trim(),
+    dateSeen: String(formData.get("dateSeen") || ""),
+    numberOfAnimals: Number(formData.get("count")) || 1,
+    details: String(formData.get("details") || "").trim(),
+    contact: String(formData.get("contact") || "").trim()
+  };
+
   const photo = document.getElementById("photoInput").files[0];
-  const report = [
-    "REPORT PREVIEW — not submitted or saved",
-    "Animal: " + data.get("animalType"),
-    "Condition: " + data.get("condition"),
-    "Location: " + data.get("location"),
-    "Date seen: " + data.get("dateSeen"),
-    "Number of animals: " + (data.get("count") || "1"),
-    "Details: " + data.get("details"),
-    "Photo selected: " + (photo ? photo.name : "No"),
-    "Contact: " + (data.get("contact") || "Not provided")
+  const previewLines = [
+    "REPORT PREVIEW — not yet submitted",
+    "",
+    "Animal: " + currentReport.animalType,
+    "Condition: " + currentReport.condition,
+    "Location: " + currentReport.location,
+    "Date seen: " + currentReport.dateSeen,
+    "Number of animals: " + currentReport.numberOfAnimals,
+    "Details: " + currentReport.details,
+    "Photo selected: " + (photo ? photo.name : "No (photos are not uploaded)"),
+    "Contact: " + (currentReport.contact || "Not provided")
   ];
 
-  document.getElementById("formStatus").textContent =
-    "Your preview is ready below. Nothing has been sent or stored.";
-  const preview = document.getElementById("reportPreview");
-  preview.hidden = false;
-  preview.textContent = report.join("\n");
+  reportPreview.textContent = previewLines.join("\n");
+  reportPreview.hidden = false;
+  sendReportBtn.hidden = false;
+  sendReportBtn.disabled = false;
+  sendReportBtn.textContent = "Submit Report to PAWTRACK";
+  formStatus.textContent = "Review your report above. If everything is correct, submit it to send the details to PAWTRACK.";
 });
+
+// STEP 2: Send the report to the Google Apps Script web app.
+sendReportBtn.addEventListener("click", async function () {
+  if (!currentReport || submissionInProgress) return;
+
+  if (!reportForm.reportValidity()) return;
+
+  // Ensure the preview matches the current form values.
+  const formData = new FormData(reportForm);
+  currentReport = {
+    animalType: String(formData.get("animalType") || "").trim(),
+    condition: String(formData.get("condition") || "").trim(),
+    location: String(formData.get("location") || "").trim(),
+    dateSeen: String(formData.get("dateSeen") || ""),
+    numberOfAnimals: Number(formData.get("count")) || 1,
+    details: String(formData.get("details") || "").trim(),
+    contact: String(formData.get("contact") || "").trim()
+  };
+
+  submissionInProgress = true;
+  sendReportBtn.disabled = true;
+  sendReportBtn.textContent = "Sending...";
+  formStatus.textContent = "Sending your report request. Please wait...";
+
+  try {
+    // Apps Script accepts this simple request without a browser preflight.
+    // no-cors means the browser cannot read the server's success/error response.
+    await fetch(PAWTRACK_SCRIPT_URL, {
+      method: "POST",
+      mode: "no-cors",
+      headers: { "Content-Type": "text/plain;charset=utf-8" },
+      body: JSON.stringify(currentReport)
+    });
+
+    formStatus.textContent = "The request was sent, but the website cannot verify the save. Please check the Reports tab in your Google Sheet before assuming the report was recorded.";
+    sendReportBtn.textContent = "Request Sent — Check Sheet";
+    reportPreview.hidden = true;
+    currentReport = null;
+    reportForm.reset();
+    document.getElementById("dateSeen").value = new Date().toISOString().slice(0, 10);
+
+  } catch (error) {
+    console.error("PAWTRACK submission error:", error);
+    formStatus.textContent = "We could not send the request. Check your internet connection and try again. If the issue continues, check your Apps Script deployment.";
+    sendReportBtn.disabled = false;
+    sendReportBtn.textContent = "Try Sending Again";
+  } finally {
+    submissionInProgress = false;
+  }
+} );
 </script>
 </body>
 </html>
