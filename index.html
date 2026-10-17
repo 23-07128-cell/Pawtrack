@@ -1,4 +1,3 @@
-
 <!doctype html>
 <html lang="en">
 <head>
@@ -235,25 +234,17 @@ footer a { color: white; }
 <body>
 
 <header>
-  <div class="field full">
-  <label for="photoInput">Photo (optional)</label>
-  <input
-    id="photoInput"
-    name="photoInput"
-    type="file"
-    accept="image/jpeg,image/png,image/webp"
-  >
-  <small>Choose a JPG, PNG, or WebP image up to 3 MB.</small>
-
-  <img
-    id="photoPreview"
-    alt="Preview of the selected animal photo"
-    hidden
-    style="display:none; max-width:100%; max-height:280px;
-           object-fit:contain; margin-top:12px; border-radius:12px;"
-  >
-  <p id="photoStatus" class="status" aria-live="polite"></p>
-</div>
+  <div class="container nav">
+    <a class="brand" href="#home">🐾 PAWTRACK</a>
+    <nav aria-label="Main navigation">
+      <a href="#home">Home</a>
+      <a href="#about">About</a>
+      <a href="#report">Report an Animal</a>
+      <a href="#community">Community</a>
+      <a href="#partners">Partners</a>
+      <a href="#resources">Resources</a>
+    </nav>
+  </div>
 </header>
 
 <main>
@@ -460,7 +451,7 @@ items.forEach((item, index) => {
 
 function showSlide(index) {
   active = (index + items.length) % items.length;
-  slides.style.transform = `translateX(-${active * 100}%)`;
+  slides.style.transform = translateX(-${active * 100}%);
   Array.from(dots.children).forEach((dot, i) => {
     dot.classList.toggle("active", i === active);
   });
@@ -486,17 +477,14 @@ document.getElementById("dateSeen").value = new Date().toISOString().slice(0, 10
 document.getElementById("year").textContent = new Date().getFullYear();
 
 // Google Apps Script Web App URL
-
 const PAWTRACK_SCRIPT_URL =
   "https://script.google.com/macros/s/AKfycbxj2nQdNj3pcsr9IRcf8cZrJK3MM3Hu3Gefwsdnn9Qja0akIhUdkFM-wiX_KmV9ryNx/exec";
 
 const reportForm = document.getElementById("reportForm");
 const reportPreview = document.getElementById("reportPreview");
 const formStatus = document.getElementById("formStatus");
-const photoInput = document.getElementById("photoInput");
-const photoPreview = document.getElementById("photoPreview");
-const photoStatus = document.getElementById("photoStatus");
 
+// Add a separate submit-to-Google-Sheets button after the preview element.
 const sendReportBtn = document.createElement("button");
 sendReportBtn.id = "sendReportBtn";
 sendReportBtn.className = "btn secondary";
@@ -507,72 +495,16 @@ reportPreview.insertAdjacentElement("afterend", sendReportBtn);
 
 let currentReport = null;
 let submissionInProgress = false;
-let selectedPhotoDataUrl = "";
-let photoPreviewUrl = "";
 
-const MAX_PHOTO_BYTES = 3 * 1024 * 1024;
+// STEP 1: Validate the form and create a preview.
+reportForm.addEventListener("submit", function (event) {
+  event.preventDefault();
 
-// Read a selected photo and show its preview.
-photoInput.addEventListener("change", function () {
-  selectedPhotoDataUrl = "";
-  photoPreview.hidden = true;
-  photoPreview.removeAttribute("src");
-  photoPreview.style.display = "none";
+  if (!reportForm.reportValidity()) return;
 
-  if (photoPreviewUrl) {
-    URL.revokeObjectURL(photoPreviewUrl);
-    photoPreviewUrl = "";
-  }
-
-  const photo = photoInput.files[0];
-
-  if (!photo) {
-    photoStatus.textContent = "";
-    return;
-  }
-
-  const allowedTypes = ["image/jpeg", "image/png", "image/webp"];
-
-  if (!allowedTypes.includes(photo.type)) {
-    photoInput.value = "";
-    photoStatus.textContent = "Please select a JPG, PNG, or WebP image.";
-    return;
-  }
-
-  if (photo.size > MAX_PHOTO_BYTES) {
-    photoInput.value = "";
-    photoStatus.textContent = "This photo exceeds 3 MB. Please choose a smaller image.";
-    return;
-  }
-
-  photoPreviewUrl = URL.createObjectURL(photo);
-  photoPreview.src = photoPreviewUrl;
-  photoPreview.hidden = false;
-  photoPreview.style.display = "block";
-  photoStatus.textContent = "Photo selected: " + photo.name;
-});
-
-// Convert the selected photo to Base64 for Apps Script.
-function readPhotoAsDataUrl(file) {
-  return new Promise((resolve, reject) => {
-    if (!file) {
-      resolve("");
-      return;
-    }
-
-    const reader = new FileReader();
-
-    reader.onload = () => resolve(String(reader.result));
-    reader.onerror = () => reject(new Error("The selected photo could not be read."));
-
-    reader.readAsDataURL(file);
-  });
-}
-
-function getReportData() {
   const formData = new FormData(reportForm);
 
-  return {
+  currentReport = {
     animalType: String(formData.get("animalType") || "").trim(),
     condition: String(formData.get("condition") || "").trim(),
     location: String(formData.get("location") || "").trim(),
@@ -581,18 +513,8 @@ function getReportData() {
     details: String(formData.get("details") || "").trim(),
     contact: String(formData.get("contact") || "").trim()
   };
-}
 
-// STEP 1: Validate and preview the report.
-reportForm.addEventListener("submit", function (event) {
-  event.preventDefault();
-
-  if (!reportForm.reportValidity()) return;
-
-  currentReport = getReportData();
-
-  const photo = photoInput.files[0];
-
+  const photo = document.getElementById("photoInput").files[0];
   const previewLines = [
     "REPORT PREVIEW — review before submitting",
     "",
@@ -602,7 +524,7 @@ reportForm.addEventListener("submit", function (event) {
     "Date seen: " + currentReport.dateSeen,
     "Number of animals: " + currentReport.numberOfAnimals,
     "Details: " + currentReport.details,
-    "Photo: " + (photo ? photo.name : "No photo attached"),
+    "Photo selected: " + (photo ? photo.name : "No (photos are not uploaded)"),
     "Contact: " + (currentReport.contact || "Not provided")
   ];
 
@@ -611,83 +533,8 @@ reportForm.addEventListener("submit", function (event) {
   sendReportBtn.hidden = false;
   sendReportBtn.disabled = false;
   sendReportBtn.textContent = "Submit Report to PAWTRACK";
-
-  formStatus.textContent =
-    "Review your report. When ready, click Submit Report to PAWTRACK.";
-
-  reportPreview.scrollIntoView({ behavior: "smooth", block: "nearest" });
+  formStatus.textContent = "Review the details above. Select Submit Report to PAWTRACK to send this report to the connected spreadsheet.";
 });
-
-// STEP 2: Send the report, including its photo if one is selected.
-sendReportBtn.addEventListener("click", async function () {
-  if (!currentReport || submissionInProgress) return;
-  if (!reportForm.reportValidity()) return;
-
-  submissionInProgress = true;
-  sendReportBtn.disabled = true;
-  sendReportBtn.textContent = "Preparing report...";
-  formStatus.textContent = "Preparing your report. Please wait.";
-
-  try {
-    // Refresh report details in case the form was edited after preview.
-    currentReport = getReportData();
-
-    const photo = photoInput.files[0];
-    let photoDataUrl = "";
-
-    if (photo) {
-      if (photo.size > MAX_PHOTO_BYTES) {
-        throw new Error("The photo exceeds 3 MB. Please choose a smaller image.");
-      }
-
-      photoDataUrl = await readPhotoAsDataUrl(photo);
-    }
-
-    const payload = {
-      ...currentReport,
-      photoDataUrl: photoDataUrl
-    };
-
-    sendReportBtn.textContent = "Sending report...";
-    formStatus.textContent =
-      "Sending report details" +
-      (photo ? " and photo" : "") +
-      ". Please wait and check your Google Sheet before retrying.";
-
-    // no-cors sends the request but prevents the browser from reading
-    // Apps Script's response. A resolved fetch is NOT proof of saving.
-    await fetch(PAWTRACK_SCRIPT_URL, {
-      method: "POST",
-      mode: "no-cors",
-      headers: {
-        "Content-Type": "text/plain;charset=utf-8"
-      },
-      body: JSON.stringify(payload)
-    });
-
-    formStatus.textContent =
-      "The request was sent, but this page cannot verify whether it was saved. " +
-      "Check the Reports tab and the PAWTRACK Report Photos folder before trying again.";
-
-    sendReportBtn.textContent = "Request Sent — Verify Submission";
-    photoStatus.textContent = photo
-      ? "The photo was included in the request. Check Drive to verify the upload."
-      : "No photo was attached to this report.";
-
-  } catch (error) {
-    console.error("PAWTRACK submission error:", error);
-
-    formStatus.textContent =
-      "Could not prepare or send the report: " + error.message;
-
-    sendReportBtn.disabled = false;
-    sendReportBtn.textContent = "Try Sending Again";
-
-  } finally {
-    submissionInProgress = false;
-  }
-});
-
 
 // STEP 2: Send the report to the Google Apps Script web app.
 sendReportBtn.addEventListener("click", async function () {
