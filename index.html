@@ -596,7 +596,7 @@ sendReportBtn.addEventListener("click", async () => {
         if (result && result.success && result.report) { savedReport = result; break; }
       } catch (_) { /* Retry briefly because the POST and sheet write may still be processing. */ }
     }
-    if (!savedReport) throw new Error("We could not confirm that the report was saved. Please check the Reports sheet before trying again to avoid a duplicate submission.");
+    if (!savedReport) throw new Error("Your report may have been submitted successfully! Use your Paw ID in the Track Report section to check your submission status. If your report isn't found, please try again later.");
     const resultBox = document.getElementById("submissionResult");
     resultBox.replaceChildren();
     const heading = document.createElement("strong"); heading.textContent = "Report saved successfully."; resultBox.appendChild(heading);
