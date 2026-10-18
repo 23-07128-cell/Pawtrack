@@ -240,6 +240,7 @@ footer a { color: white; }
       <a href="#home">Home</a>
       <a href="#about">About</a>
       <a href="#report">Report an Animal</a>
+      <a href="#track">Track Report</a>
       <a href="#community">Community</a>
       <a href="#partners">Partners</a>
       <a href="#resources">Resources</a>
@@ -299,7 +300,8 @@ footer a { color: white; }
         <aside class="report-aside reveal">
           <h3>Your report can help raise awareness.</h3>
           <p>Describe what you observed and where you saw the animal. Please keep a safe distance, especially if the animal appears frightened or injured.</p>
-          <p><strong>Remember:</strong> Submitting this form sends the report details to the PAWTRACK Google Sheets database. This demo does not automatically notify barangay officials or animal welfare organizations.</p>
+          <p><strong>What happens next?</strong> Your report is saved to the PAWTRACK report sheet. After submitting, keep your Report Number so you can check its status. Reports begin as <strong>Pending</strong>.</p>
+          <p>This website does not automatically dispatch rescue services or guarantee a response. For an immediate emergency, contact the appropriate local service directly.</p>
         </aside>
         <form id="reportForm" class="reveal">
           <div class="form-grid">
@@ -321,37 +323,49 @@ footer a { color: white; }
             </div>
             <div class="field full">
               <label for="location">Location or landmark *</label>
-              <input id="location" name="location" placeholder="Street, purok, barangay, or landmark" required>
+              <input id="location" name="location" maxlength="500" placeholder="Street, purok, barangay, or landmark" required>
             </div>
             <div class="field">
               <label for="dateSeen">Date seen *</label>
               <input id="dateSeen" name="dateSeen" type="date" required>
             </div>
             <div class="field">
-              <label for="count">Number of animals</label>
-              <input id="count" name="count" type="number" min="1" max="100" value="1">
+              <label for="count">Number of animals *</label>
+              <input id="count" name="count" type="number" min="1" max="100" value="1" required>
             </div>
             <div class="field full">
               <label for="details">What did you observe? *</label>
-              <textarea id="details" name="details" placeholder="Describe the animal and what help may be needed." required></textarea>
+              <textarea id="details" name="details" maxlength="3000" placeholder="Describe the animal and what help may be needed." required></textarea>
             </div>
             <div class="field full">
               <label for="photoInput">Photo (optional)</label>
-              <input id="photoInput" type="file" accept="image/*">
-              <small>In this demo, your photo is not uploaded.</small>
+              <input id="photoInput" type="file" accept="image/jpeg,image/png,image/webp">
+              <small>Optional: JPG, PNG, or WebP image, maximum 3 MB. The image will be stored in the PAWTRACK Drive folder.</small>
             </div>
             <div class="field full">
               <label for="contact">Contact details (optional)</label>
-              <input id="contact" name="contact" placeholder="Only share details you are comfortable providing">
+              <input id="contact" name="contact" maxlength="200" placeholder="Only share details you are comfortable providing">
+              <small>Your contact details are for PAWTRACK administrators and will not appear in public tracking results.</small>
             </div>
             <div class="field full">
+              <label><input id="privacyConfirm" type="checkbox" required style="width:auto;margin-right:8px">I understand that report details will be stored by PAWTRACK administrators to help review the report. *</label>
               <button class="btn primary" type="submit">Preview My Report →</button>
               <p id="formStatus" class="status" role="status" aria-live="polite"></p>
               <pre id="reportPreview" hidden style="white-space:pre-wrap;overflow-wrap:anywhere;background:#e8f2f0;padding:15px;border-radius:12px;font:inherit"></pre>
+              <button class="btn secondary" id="sendReportBtn" type="button" hidden>Confirm and Submit Report</button>
+              <div id="submissionResult" class="partner-note" hidden aria-live="polite"></div>
             </div>
           </div>
         </form>
       </div>
+    </div>
+  </section>
+
+
+  <section class="soft" id="track">
+    <div class="container">
+      <div class="heading reveal"><span class="kicker">Report tracking</span><h2>Track My Report</h2><p>Enter the Report Number you received after submitting a report to check its latest status.</p></div>
+      <div style="max-width:720px;margin:auto"><form id="trackForm" class="reveal"><div class="field"><label for="reportNumber">Report Number</label><input id="reportNumber" name="reportNumber" placeholder="Example: PAW-20261018-A1B2C3" required autocomplete="off" maxlength="60"></div><div class="actions"><button class="btn primary" id="trackBtn" type="submit">Check Status</button></div><p id="trackStatus" class="status" role="status" aria-live="polite"></p><div id="trackingResult" class="partner-note" hidden></div></form><p class="partner-note">Public tracking displays basic report information and status only. It does not show contact details, the full description, or photo link. Statuses are managed by PAWTRACK administrators in the Google Sheet: Pending, Under Review, Referred, or Resolved.</p></div>
     </div>
   </section>
 
@@ -428,12 +442,13 @@ footer a { color: white; }
   <div class="container">
     <div class="footer-grid">
       <div><a class="brand" href="#home">🐾 PAWTRACK</a><p>A community-based stray animal monitoring and reporting system for residential communities.</p></div>
-      <div><h3>Explore</h3><div class="footer-links"><a href="#about">About PAWTRACK</a><a href="#report">Report an Animal</a><a href="#community">Community Tips</a></div></div>
+      <div><h3>Explore</h3><div class="footer-links"><a href="#about">About PAWTRACK</a><a href="#report">Report an Animal</a><a href="#track">Track My Report</a><a href="#community">Community Tips</a></div></div>
       <div><h3>Get Involved</h3><div class="footer-links"><a href="#partners">Partner Directory</a><a href="#resources">Animal Welfare Resources</a><a href="#home">Back to Top ↑</a></div></div>
     </div>
     <div class="copyright">© <span id="year"></span> PAWTRACK. Community care starts with awareness. Demo website.</div>
   </div>
 </footer>
+<iframe name="pawtrackSubmitFrame" id="pawtrackSubmitFrame" title="Report submission frame" hidden></iframe>
 
 <script>
 const slides = document.getElementById("slides");
@@ -451,7 +466,7 @@ items.forEach((item, index) => {
 
 function showSlide(index) {
   active = (index + items.length) % items.length;
-  slides.style.transform = translateX(-${active * 100}%);
+  slides.style.transform = `translateX(-${active * 100}%)`;
   Array.from(dots.children).forEach((dot, i) => {
     dot.classList.toggle("active", i === active);
   });
@@ -476,111 +491,149 @@ if ("IntersectionObserver" in window) {
 document.getElementById("dateSeen").value = new Date().toISOString().slice(0, 10);
 document.getElementById("year").textContent = new Date().getFullYear();
 
-// Google Apps Script Web App URL
-const PAWTRACK_SCRIPT_URL =
-  "https://script.google.com/macros/s/AKfycbxj2nQdNj3pcsr9IRcf8cZrJK3MM3Hu3Gefwsdnn9Qja0akIhUdkFM-wiX_KmV9ryNx/exec";
-
+// PAWTRACK Google Apps Script Web App
+const PAWTRACK_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxj2nQdNj3pcsr9IRcf8cZrJK3MM3Hu3Gefwsdnn9Qja0akIhUdkFM-wiX_KmV9ryNx/exec";
 const reportForm = document.getElementById("reportForm");
 const reportPreview = document.getElementById("reportPreview");
 const formStatus = document.getElementById("formStatus");
-
-// Add a separate submit-to-Google-Sheets button after the preview element.
-const sendReportBtn = document.createElement("button");
-sendReportBtn.id = "sendReportBtn";
-sendReportBtn.className = "btn secondary";
-sendReportBtn.type = "button";
-sendReportBtn.textContent = "Submit Report to PAWTRACK";
-sendReportBtn.hidden = true;
-reportPreview.insertAdjacentElement("afterend", sendReportBtn);
-
+const sendReportBtn = document.getElementById("sendReportBtn");
 let currentReport = null;
 let submissionInProgress = false;
 
-// STEP 1: Validate the form and create a preview.
-reportForm.addEventListener("submit", function (event) {
-  event.preventDefault();
-
-  if (!reportForm.reportValidity()) return;
-
-  const formData = new FormData(reportForm);
-
-  currentReport = {
-    animalType: String(formData.get("animalType") || "").trim(),
-    condition: String(formData.get("condition") || "").trim(),
-    location: String(formData.get("location") || "").trim(),
-    dateSeen: String(formData.get("dateSeen") || ""),
-    numberOfAnimals: Number(formData.get("count")) || 1,
-    details: String(formData.get("details") || "").trim(),
-    contact: String(formData.get("contact") || "").trim()
+function createReportId() {
+  const date = new Date().toISOString().slice(0, 10).replace(/-/g, "");
+  const bytes = new Uint8Array(4);
+  crypto.getRandomValues(bytes);
+  const random = Array.from(bytes, b => b.toString(16).padStart(2, "0")).join("").slice(0, 6).toUpperCase();
+  return `PAW-${date}-${random}`;
+}
+function collectReport() {
+  const data = new FormData(reportForm);
+  return {
+    reportId: currentReport ? currentReport.reportId : createReportId(),
+    animalType: String(data.get("animalType") || "").trim(),
+    condition: String(data.get("condition") || "").trim(),
+    location: String(data.get("location") || "").trim(),
+    dateSeen: String(data.get("dateSeen") || ""),
+    numberOfAnimals: Number(data.get("count")),
+    details: String(data.get("details") || "").trim(),
+    contact: String(data.get("contact") || "").trim()
   };
-
+}
+function readFileAsDataUrl(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = () => reject(new Error("Could not read the selected photo."));
+    reader.readAsDataURL(file);
+  });
+}
+function checkReportByJsonp(reportId, timeoutMs = 9000) {
+  return new Promise((resolve, reject) => {
+    const callbackName = "pawtrackCallback_" + Date.now() + "_" + Math.floor(Math.random() * 100000);
+    const script = document.createElement("script");
+    const timeout = setTimeout(() => finish(new Error("The status check timed out.")), timeoutMs);
+    function finish(error, data) {
+      clearTimeout(timeout);
+      delete window[callbackName];
+      script.remove();
+      error ? reject(error) : resolve(data);
+    }
+    window[callbackName] = data => finish(null, data);
+    script.onerror = () => finish(new Error("Could not contact the PAWTRACK tracking service."));
+    script.src = PAWTRACK_SCRIPT_URL + "?action=track&reportId=" + encodeURIComponent(reportId) + "&callback=" + callbackName + "&_=" + Date.now();
+    document.body.appendChild(script);
+  });
+}
+reportForm.addEventListener("submit", event => {
+  event.preventDefault();
+  if (!reportForm.reportValidity()) return;
+  currentReport = collectReport();
   const photo = document.getElementById("photoInput").files[0];
-  const previewLines = [
-    "REPORT PREVIEW — review before submitting",
-    "",
-    "Animal: " + currentReport.animalType,
-    "Condition: " + currentReport.condition,
-    "Location: " + currentReport.location,
-    "Date seen: " + currentReport.dateSeen,
-    "Number of animals: " + currentReport.numberOfAnimals,
-    "Details: " + currentReport.details,
-    "Photo selected: " + (photo ? photo.name : "No (photos are not uploaded)"),
-    "Contact: " + (currentReport.contact || "Not provided")
-  ];
-
-  reportPreview.textContent = previewLines.join("\n");
+  reportPreview.textContent = [
+    "REPORT PREVIEW — review before submitting", "", "Report Number: " + currentReport.reportId,
+    "Animal: " + currentReport.animalType, "Condition: " + currentReport.condition,
+    "Location: " + currentReport.location, "Date seen: " + currentReport.dateSeen,
+    "Number of animals: " + currentReport.numberOfAnimals, "Details: " + currentReport.details,
+    "Photo: " + (photo ? photo.name : "No photo attached"),
+    "Contact: " + (currentReport.contact || "Not provided"), "Initial status: Pending"
+  ].join("\n");
   reportPreview.hidden = false;
   sendReportBtn.hidden = false;
   sendReportBtn.disabled = false;
-  sendReportBtn.textContent = "Submit Report to PAWTRACK";
-  formStatus.textContent = "Review the details above. Select Submit Report to PAWTRACK to send this report to the connected spreadsheet.";
+  sendReportBtn.textContent = "Confirm and Submit Report";
+  document.getElementById("submissionResult").hidden = true;
+  formStatus.textContent = "Review the details. Save your Report Number after successful submission to track the report later.";
 });
-
-// STEP 2: Send the report to the Google Apps Script web app.
-sendReportBtn.addEventListener("click", async function () {
-  if (!currentReport || submissionInProgress) return;
-
-  if (!reportForm.reportValidity()) return;
-
-  // Ensure the preview matches the current form values.
-  const formData = new FormData(reportForm);
-  currentReport = {
-    animalType: String(formData.get("animalType") || "").trim(),
-    condition: String(formData.get("condition") || "").trim(),
-    location: String(formData.get("location") || "").trim(),
-    dateSeen: String(formData.get("dateSeen") || ""),
-    numberOfAnimals: Number(formData.get("count")) || 1,
-    details: String(formData.get("details") || "").trim(),
-    contact: String(formData.get("contact") || "").trim()
-  };
-
+sendReportBtn.addEventListener("click", async () => {
+  if (!currentReport || submissionInProgress || !reportForm.reportValidity()) return;
   submissionInProgress = true;
   sendReportBtn.disabled = true;
-  sendReportBtn.textContent = "Sending...";
-  formStatus.textContent = "Sending the report request. Please wait and do not close this page...";
-
+  sendReportBtn.textContent = "Submitting...";
+  formStatus.textContent = "Sending your report. Please keep this page open while PAWTRACK checks whether it was saved.";
   try {
-    // Apps Script accepts this simple request without a browser preflight.
-    // no-cors means the browser cannot read the server's success/error response.
-    await fetch(PAWTRACK_SCRIPT_URL, {
-      method: "POST",
-      mode: "no-cors",
-      headers: { "Content-Type": "text/plain;charset=utf-8" },
-      body: JSON.stringify(currentReport)
-    });
-
-    formStatus.textContent = "The request was sent to Google Apps Script, but this browser cannot confirm that it was saved. Check the Reports tab in Google Sheets before submitting again. If no row appears, check Apps Script > Executions and confirm the latest web app deployment is active.";
-    sendReportBtn.textContent = "Request Sent — Check Google Sheet";
-    // Keep the preview and form values visible until the user verifies the row in Sheets.
-
+    const payloadData = { ...currentReport };
+    const photo = document.getElementById("photoInput").files[0];
+    if (photo) {
+      if (!["image/jpeg", "image/png", "image/webp"].includes(photo.type)) throw new Error("Please select a JPG, PNG, or WebP photo.");
+      if (photo.size > 3 * 1024 * 1024) throw new Error("Photo size must be 3 MB or less.");
+      payloadData.photoDataUrl = await readFileAsDataUrl(photo);
+    }
+    // A hidden form POST works with Apps Script redirects; JSONP polling verifies the saved row.
+    const hiddenForm = document.createElement("form");
+    hiddenForm.method = "POST";
+    hiddenForm.action = PAWTRACK_SCRIPT_URL;
+    hiddenForm.target = "pawtrackSubmitFrame";
+    hiddenForm.style.display = "none";
+    const payloadInput = document.createElement("input");
+    payloadInput.type = "hidden"; payloadInput.name = "payload"; payloadInput.value = JSON.stringify(payloadData);
+    hiddenForm.appendChild(payloadInput); document.body.appendChild(hiddenForm); hiddenForm.submit(); hiddenForm.remove();
+    let savedReport = null;
+    for (let attempt = 0; attempt < 12; attempt++) {
+      await new Promise(resolve => setTimeout(resolve, 1500));
+      try {
+        const result = await checkReportByJsonp(currentReport.reportId, 7000);
+        if (result && result.success && result.report) { savedReport = result; break; }
+      } catch (_) { /* Retry briefly because the POST and sheet write may still be processing. */ }
+    }
+    if (!savedReport) throw new Error("We could not confirm that the report was saved. Please check the Reports sheet before trying again to avoid a duplicate submission.");
+    const resultBox = document.getElementById("submissionResult");
+    resultBox.replaceChildren();
+    const heading = document.createElement("strong"); heading.textContent = "Report saved successfully."; resultBox.appendChild(heading);
+    const numberLine = document.createElement("p"); numberLine.textContent = "Your Report Number: " + currentReport.reportId; resultBox.appendChild(numberLine);
+    const statusLine = document.createElement("p"); statusLine.textContent = "Current status: Pending. Keep your Report Number to check progress later."; resultBox.appendChild(statusLine);
+    resultBox.hidden = false; formStatus.textContent = "PAWTRACK found your report in the tracking system.";
+    reportPreview.hidden = true; sendReportBtn.hidden = true; reportForm.reset(); currentReport = null;
+    document.getElementById("dateSeen").value = new Date().toISOString().slice(0, 10);
+    resultBox.scrollIntoView({ behavior: "smooth", block: "center" });
   } catch (error) {
     console.error("PAWTRACK submission error:", error);
-    formStatus.textContent = "We could not send the request. Check your internet connection and try again. If the issue continues, check your Apps Script deployment.";
-    sendReportBtn.disabled = false;
-    sendReportBtn.textContent = "Try Sending Again";
-  } finally {
-    submissionInProgress = false;
-  }
+    formStatus.textContent = error.message || "Something went wrong. Please check your connection and try again.";
+    sendReportBtn.disabled = false; sendReportBtn.textContent = "Try Submission Again";
+  } finally { submissionInProgress = false; }
+});
+
+const trackForm = document.getElementById("trackForm");
+trackForm.addEventListener("submit", async event => {
+  event.preventDefault();
+  const reportId = document.getElementById("reportNumber").value.trim().toUpperCase();
+  if (!reportId) return;
+  const button = document.getElementById("trackBtn");
+  const status = document.getElementById("trackStatus");
+  const resultBox = document.getElementById("trackingResult");
+  button.disabled = true; status.textContent = "Checking report status..."; resultBox.hidden = true;
+  try {
+    const result = await checkReportByJsonp(reportId, 12000);
+    if (!result.success || !result.report) throw new Error(result.error || "No matching report was found.");
+    const r = result.report; resultBox.replaceChildren();
+    const heading = document.createElement("h3"); heading.textContent = "Report status"; resultBox.appendChild(heading);
+    const list = document.createElement("dl");
+    const fields = [["Report Number",r.reportId],["Date submitted",r.dateSubmitted],["Animal type",r.animalType],["Condition",r.condition],["Location",r.location],["Date seen",r.dateSeen],["Number of animals",r.numberOfAnimals],["Current status",r.status]];
+    fields.forEach(([label,value]) => { const dt=document.createElement("dt");dt.textContent=label;const dd=document.createElement("dd");dd.textContent=value || "Not provided";if(label==="Current status"){dd.style.fontWeight="bold";dd.style.color="var(--teal)";}list.append(dt,dd); });
+    resultBox.appendChild(list); resultBox.hidden = false;
+    status.textContent = "Report found. This is the latest status recorded by PAWTRACK administrators.";
+  } catch (error) { status.textContent = error.message || "Unable to check the report right now. Please try again later."; }
+  finally { button.disabled = false; }
 });
 </script>
 </body>
